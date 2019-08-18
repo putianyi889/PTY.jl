@@ -4,7 +4,7 @@ export FunArray,FunVector,FunMatrix
 
 struct FunArray{T,n} <: AbstractArray{T,n}
     fun::Function
-    sz::Tuple{Vararg{T,N}} where TT <: Integer
+    sz::NTuple{N,TT} where TT <: Integer
 end
 Base.size(A::FunArray)=A.sz
 Base.getindex(A::FunArray{T,N},I::Vararg{Int,N}) where {T,N}=A.fun(I)
