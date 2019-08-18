@@ -2,7 +2,7 @@ module PTY
 
 export FunArray,FunVector,FunMatrix
 
-struct FunArray{T,n} <: AbstractArray{T,n}
+struct FunArray{T,N} <: AbstractArray{T,N} where T,N
     fun::Function
     sz::NTuple{N,TT} where TT <: Integer
 end
