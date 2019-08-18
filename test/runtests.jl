@@ -5,6 +5,7 @@ using PTY,Test
     B[2,2,end]
     B[:,1:end,3]
     B[:,:,:]
+    @test typeof(B[1,1,1])==Float64
 
     show(B)
     show(FunMatrix(Float64,+,3,3))
