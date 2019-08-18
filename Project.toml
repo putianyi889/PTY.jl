@@ -1,4 +1,7 @@
 name = "PTY"
 uuid = "5b83b1ae-c1cb-11e9-23b6-9735346a1d55"
 authors = ["putianyi889 <44583944+putianyi889@users.noreply.github.com>"]
-version = "0.1.16"
+version = "0.1.17"
+
+[deps]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
