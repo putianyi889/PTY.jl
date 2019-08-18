@@ -12,6 +12,6 @@ Base.getindex(A::FunArray,ind::Integer...)=A.fun(ind)
 const FunVector{T}=FunArray{T,1}
 const FunMatrix{T}=FunArray{T,2}
 
-FunArray(T::Type,fun::Function,sz...)=FunArray{T,length(sz)}(fun,[sz])
+FunArray(T::Type,fun::Function,sz...)=FunArray{T,length(sz)}(fun,collect(sz))
 
 end # module
