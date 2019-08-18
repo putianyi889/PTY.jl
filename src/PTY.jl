@@ -7,7 +7,7 @@ struct FunArray{T,n} <: AbstractArray{T,n}
     sz::Tuple{TT,1} where TT <: Integer
 end
 Base.size(A::FunArray)=A.sz
-Base.getindex(A::FunArray,I::Vararg{Int, N})=A.fun(I)
+Base.getindex(A::FunArray{T,N},I::Vararg{Int, N}) where {T,N::Int}=A.fun(I)
 
 const FunVector{T}=FunArray{T,1}
 const FunMatrix{T}=FunArray{T,2}
