@@ -18,7 +18,7 @@ function LFSR(state::Int, plan::AbstractVector{Int}, len::Int)
 	return ret
 end
 
-LFSR(plan::AbstractVector{Int}, len::Int) = [GenRecur(n, plan, len) for n in 1:(1<<len - 1)]
+LFSR(plan::AbstractVector{Int}, len::Int) = [LFSR(n, plan, len) for n in 1:(1<<len - 1)]
 
 function checkTTAND(setup::AbstractVector{<:Integer}, inputs::AbstractVector{<:Integer}, outputs::AbstractVector{Bool})
 	for (input, output) in zip(inputs, outputs)
