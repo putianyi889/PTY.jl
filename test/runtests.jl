@@ -1,13 +1,18 @@
 using PTY,Test
 
-@testset "FunArray" begin
-    B=FunArray(Float64,(x,y,z)->x+y*z,2,3,4)
-    B[2,2,end]
-    B[:,1:end,3]
-    B[:,:,:]
-    @test typeof(B[1,1,1])==Float64
+@testset "TR" begin
+	@testset "elementary logic" begin
+		@test TR.AND(true, false) === TR.AND(false, false) === TR.AND(false, true) === false
+		@test TR.AND(true, true) === true
+		@test TR.AND(true, true, false) === false
+		@test TR.XOR(true) === TR.XOR(true, false) === TR.XOR(true, false, false) === true
+		@test TR.XOR(false) === TR.XOR(true, true) === TR.XOR(false, false) === TR.XOR(true, true, false) === TR.XOR(false, false, false) === false
+	end
 
-    show(B)
-    show(FunMatrix(Float64,+,3,3))
-    show(FunVector(Float64,sqrt,10))
+	@testset "comblogic" begin
+		inputs = 8:15; outputs = [false, true, true, true, true, true, true, false]
+		retAND, retXOR = TR.CombLogic(2, 3, inputs, outputs)
+		@test retAND == [(true, [0b1101, 0b1011]), (true, [0b1110, 0b1011]), (true, [0b1110, 0b1101])]
+		@test isempty(retXOR)
+	end
 end
