@@ -67,17 +67,19 @@ Return the lists of possible combinatory logics for given `inputs` and `outputs`
 # Example
 Imagine we want to check if a 4-bit input can be divided by 3. Further, the input is expected to have only one decimal digit, i.e. in `0:9`. We don't care how the logic behaves for inputs `10:15`. The truth table would be
 
-|  in|  out|\\
-|0000| true|\\
-|0001|false|\\
-|0010|false|\\
-|0011| true|\\
-|0100|false|\\
-|0101|false|\\
-|0110| true|\\
-|0111|false|\\
-|1000|false|\\
+```
+|  in|  out|
+|0000| true|
+|0001|false|
+|0010|false|
+|0011| true|
+|0100|false|
+|0101|false|
+|0110| true|
+|0111|false|
+|1000|false|
 |1001| true|
+```
 
 Then we set `inputs = 0:9` and `outputs = [true, false, false, true, false, false, true, false, false, true]`. Now try to find a configuration with least lamps.
 ```julia-repl
