@@ -10,7 +10,7 @@ using PTY,Test
 	end
 
 	@testset "comblogic" begin
-		inputs = 8:15; outputs = [false, true, true, true, true, true, true, false]
+		inputs = 0:7; outputs = [false, true, true, true, true, true, true, false]
 		retAND, retXOR = TR.CombLogic(2, 3, inputs, outputs)
 		@test retAND == [(true, [0b1101, 0b1011]), (true, [0b1110, 0b1011]), (true, [0b1110, 0b1101])]
 		@test isempty(retXOR)
