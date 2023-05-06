@@ -1,7 +1,7 @@
 name = "PTY"
 uuid = "5b83b1ae-c1cb-11e9-23b6-9735346a1d55"
 authors = ["putianyi889 <44583944+putianyi889@users.noreply.github.com>"]
-version = "0.3"
+version = "0.4.0"
 
 [deps]
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
