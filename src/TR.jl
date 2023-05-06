@@ -1,7 +1,6 @@
 module TR
 
 using StaticArrays: MVector, SVector
-using DataFrames: DataFrame
 
 @inline AND(args::Bool...) = all(args)
 @inline XOR(args::Bool...) = sum(args) == 1
