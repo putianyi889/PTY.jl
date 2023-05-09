@@ -1,4 +1,8 @@
-using PTY,Test
+using PTY, Test, Aqua
+
+@testset "Aqua" begin
+	Aqua.test_all(PTY)
+end
 
 @testset "TR" begin
 	@testset "elementary logic" begin
