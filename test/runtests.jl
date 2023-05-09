@@ -10,12 +10,17 @@ using PTY,Test
 	end
 
 	@testset "comblogic" begin
-		inputs = 8:15; outputs = [false, true, true, true, true, true, true, false]
-		retAND, retXOR = TR.CombLogic(2, inputs, outputs)
-		@test retAND == [(true, [0b1101, 0b1011]), (true, [0b1110, 0b1011]), (true, [0b1110, 0b1101])]
-		@test isempty(retXOR)
 
-		@test TR.plan2string(TR.AND, 3, true, [0b1101, 0b1011]) === TR.plan2string(TR.AND, 3, (true, [0b1101, 0b1011])) === "~&(~ac, ~ab)"
-		@test TR.plan2string(TR.XOR, 4, false, [0x12, 0x09, 0x04]) === "^(~b, ad, c)"
+		@testset "Gates" begin
+			G1 = TR.AndGate(true, 3, [0b1101, 0b1011])
+			G2 = TR.XorGate(false, 4, [0x12, 0x09, 0x04])
+			@test G1 isa TR.CombGate
+			@test G2 isa TR.CombGate
+			@test String(G1) === "~&(~ac, ~ab)"
+			@test String(G2) === "^(~b, ad, c)"
+		end
+		inputs = 8:15; outputs = [false, true, true, true, true, true, true, false]
+		ret = TR.CombLogic(2, inputs, outputs)
+		@test ret == [TR.AndGate(true, 3, [0b1101, 0b1011]), TR.AndGate(true, 3, [0b1110, 0b1011]), TR.AndGate(true, 3, [0b1110, 0b1101])]
 	end
 end

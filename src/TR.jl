@@ -1,6 +1,7 @@
 module TR
 
 using StaticArrays: MVector, SVector
+export AndGate, XorGate, CombGate
 
 @inline AND(args::Bool...) = all(args)
 @inline XOR(args::Bool...) = sum(args) == 1
@@ -19,6 +20,34 @@ function LFSR(state::Int, plan::AbstractVector{Int}, len::Int)
 end
 
 LFSR(plan::AbstractVector{Int}, len::Int) = [LFSR(n, plan, len) for n in 1:(1<<len - 1)]
+
+abstract type AbstractGate end
+struct AndGate{T<:Integer, V<:AbstractVector{<:Integer}}
+	gatestate::Bool
+	args::T
+	lampstates::V
+end
+struct XorGate{T<:Integer, V<:AbstractVector{<:Integer}}
+	gatestate::Bool
+	args::T
+	lampstates::V
+end
+const CombGate = Union{AndGate, XorGate}
+for GATE in (:AndGate, :XorGate)
+	@eval $GATE(gatestate::Bool, args::Integer, lampstates::AbstractVector{<:Integer}) = $GATE{typeof(args), typeof(lampstates)}(gatestate, args, lampstates)
+	@eval Base.:(==)(A::$GATE, B::$GATE) = (A.gatestate == B.gatestate) && (A.args == B.args) && (A.lampstates == B.lampstates)
+end
+
+function Base.String(G::CombGate)
+	ret = IOBuffer()
+	print(ret, ifelse(G.gatestate, '~', ""), logicsymb(G), '(', lampstate2string(G.lampstates[1], G.args))
+	for k in 2:lastindex(G.lampstates)
+		print(ret, ", ", lampstate2string(G.lampstates[k], G.args))
+	end
+	print(ret, ')')
+	return String(take!(ret))
+end
+Base.show(io::IO, G::CombGate) = print(io, String(G))
 
 function checkTTAND(setup::AbstractVector{<:Integer}, inputs::AbstractVector{<:Integer}, outputs::AbstractVector{Bool})
 	for (input, output) in zip(inputs, outputs)
@@ -91,26 +120,25 @@ julia> CombLogic(3, inputs, outputs)
 The first result says that there is no 2-lamp logic for the purpose. The second result says that there is no 3-lamp AND logic but many 3-lamp XOR logics for the purpose. To convert the results to readable texts, see `plan2string`.
 """
 function CombLogic(lamps::Integer, inputs::AbstractVector{<:Integer}, outputs::AbstractVector{Bool})
-	args = ndigits(inputs[1], base = 2)
+	args = ndigits(inputs[1], base = 2) - true
 	stack = MVector{lamps, UInt8}(undef)
 	top = 1
 	stack[1] = 0
-	retAND = Vector{Tuple{Bool,SVector{lamps, UInt8}}}()
-	retXOR = Vector{Tuple{Bool,SVector{lamps, UInt8}}}()
-	cases = 1 << args
+	ret = Vector{CombGate}()
+	cases = 1 << (args + true)
 	while top > 0
 		if top == lamps
 			for k in 0:stack[lamps - 1]
 				stack[lamps] = k
 				if checkTTAND(stack, inputs, outputs)
-					push!(retAND, (false, SVector(stack)))
+					push!(ret, AndGate(false, args, SVector(stack)))
 				elseif checkTTNAND(stack, inputs, outputs)
-					push!(retAND, (true, SVector(stack)))
+					push!(ret, AndGate(true, args, SVector(stack)))
 				end
 				if checkTTXOR(stack, inputs, outputs)
-					push!(retXOR, (false, SVector(stack)))
+					push!(ret, XorGate(false, args, SVector(stack)))
 				elseif checkTTNXOR(stack, inputs, outputs)
-					push!(retXOR, (true, SVector(stack)))
+					push!(ret, XorGate(false, args, SVector(stack)))
 				end
 			end
 			top = lamps - true
@@ -131,13 +159,15 @@ function CombLogic(lamps::Integer, inputs::AbstractVector{<:Integer}, outputs::A
 			end
 		end
 	end
-	return retAND, retXOR
+	return ret
 end
 
 # TODO: convert the results to text
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
 logicsymb(::typeof(AND)) = '&'
 logicsymb(::typeof(XOR)) = '^'
+logicsymb(::AndGate) = '&'
+logicsymb(::XorGate) = '^'
 
 """
 	plan2string(f, args, gatestate, lampstates)
