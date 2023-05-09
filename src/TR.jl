@@ -32,7 +32,7 @@ struct XorGate{T<:Integer, V<:AbstractVector{<:Integer}}
 	args::T
 	lampstates::V
 end
-const CombGate = Union{AndGate, XorGate}
+const CombGate{T, V} = Union{AndGate{T, V}, XorGate{T, V}}
 for GATE in (:AndGate, :XorGate)
 	@eval $GATE(gatestate::Bool, args::Integer, lampstates::AbstractVector{<:Integer}) = $GATE{typeof(args), typeof(lampstates)}(gatestate, args, lampstates)
 	@eval Base.:(==)(A::$GATE, B::$GATE) = (A.gatestate == B.gatestate) && (A.args == B.args) && (A.lampstates == B.lampstates)
@@ -124,7 +124,7 @@ function CombLogic(lamps::Integer, inputs::AbstractVector{<:Integer}, outputs::A
 	stack = MVector{lamps, UInt8}(undef)
 	top = 1
 	stack[1] = 0
-	ret = Vector{CombGate}()
+	ret = Vector{CombGate{Int, SVector{2, UInt8}}}()
 	cases = 1 << (args + true)
 	while top > 0
 		if top == lamps
@@ -186,7 +186,7 @@ Consider `plan2string(XOR, 4, false, [0x12, 0x09, 0x04])`. It's an `XOR` gate wh
 - `0x09 = 0b01001` means the default state of the second lamp is `OFF` and `a` and `d` are connected to the lamp.
 - `0x04 = 0b00100` means the default state of the third lamp is `OFF` and only `c` is connected to the lamp.
 
-```julia-repl
+```jldoctest
 julia> plan2string(XOR, 4, false, [0x12, 0x09, 0x04])
 "^(~b, ad, c)"
 
@@ -204,6 +204,23 @@ function plan2string(f, args::Integer, gatestate::Bool, lampstates::AbstractVect
 	return ret
 end
 plan2string(f, args, plan::Tuple{Bool, <:AbstractVector{<:Integer}}) = plan2string(f, args, plan...)
+
+"""
+	lampstate2string(lampstate::Integer, args::Integer)
+
+Convert binary coded `lampstate` into a readable string. `args` tells the number of distinct inputs.
+# Examples
+```jldoctest
+julia> lampstate2string(0b1111, 4)
+"abcd"
+
+julia> lampstate2string(0b11101, 4)
+"~acd"
+
+julia> lampstate2string(0b10000, 4)
+"~"
+```
+"""
 function lampstate2string(lampstate::Integer, args::Integer)
 	ret = ifelse(isodd(lampstate >> args), "~", "")
 	for k in 1:args
