@@ -1,6 +1,7 @@
 module TR
 
 using StaticArrays: MVector, SVector
+export AND, XOR
 export AndGate, XorGate, CombGate
 
 @inline AND(args::Bool...) = all(args)
@@ -34,7 +35,7 @@ struct XorGate{T<:Integer, V<:AbstractVector{<:Integer}}
 end
 const CombGate{T, V} = Union{AndGate{T, V}, XorGate{T, V}}
 for GATE in (:AndGate, :XorGate)
-	@eval $GATE(gatestate::Bool, args::Integer, lampstates::AbstractVector{<:Integer}) = $GATE{typeof(args), typeof(lampstates)}(gatestate, args, lampstates)
+	#@eval $GATE(gatestate::Bool, args::Integer, lampstates::AbstractVector{<:Integer}) = $GATE{typeof(args), typeof(lampstates)}(gatestate, args, lampstates)
 	@eval Base.:(==)(A::$GATE, B::$GATE) = (A.gatestate == B.gatestate) && (A.args == B.args) && (A.lampstates == B.lampstates)
 end
 
@@ -110,21 +111,37 @@ Imagine we want to check if a 4-bit input can be divided by 3. Further, the inpu
 ```
 
 Then we set `inputs = 16:25` (which is `0:9` with the 5th last bit set to `1`) and `outputs = [true, false, false, true, false, false, true, false, false, true]`. Now try to find a configuration with least lamps.
-```julia-repl
-julia> CombLogic(2, inputs, outputs)
-(Tuple{Bool, StaticArraysCore.SVector{UInt8}}[], Tuple{Bool, StaticArraysCore.SVector{UInt8}}[])
+```jldoctest
+julia> inputs = 16:25;
 
-julia> CombLogic(3, inputs, outputs)
-(Tuple{Bool, SVector{3, UInt8}}[], Tuple{Bool, SVector{3, UInt8}}[(0, [0x12, 0x09, 0x04]), (0, [0x12, 0x0b, 0x06]), (0, [0x15, 0x09, 0x03]), (0, [0x15, 0x0b, 0x01]), (0, [0x15, 0x0c, 0x06]), (0, [0x15, 0x0e, 0x04]), (0, [0x1a, 0x04, 0x01]), (0, [0x1a, 0x06, 0x03]), (0, [0x1a, 0x0c, 0x09]), (0, [0x1a, 0x0e, 0x0b]), (0, [0x1d, 0x06, 0x04]), (0, [0x1d, 0x0b, 0x09])])
+julia> outputs = [true, false, false, true, false, false, true, false, false, true];
+
+julia> TR.CombLogic(2, inputs, outputs)
+PTY.TR.CombGate{Int64, StaticArraysCore.SVector{2, UInt8}}[]
+
+julia> TR.CombLogic(3, inputs, outputs)
+12-element Vector{PTY.TR.CombGate{Int64, StaticArraysCore.SVector{3, UInt8}}}:
+ ^(~b, ad, c)
+ ^(~b, abd, bc)
+ ^(~ac, ad, ab)
+ ^(~ac, abd, a)
+ ^(~ac, cd, bc)
+ ^(~ac, bcd, c)
+ ^(~bd, c, a)
+ ^(~bd, bc, ab)
+ ^(~bd, cd, ad)
+ ^(~bd, bcd, abd)
+ ^(~acd, bc, c)
+ ^(~acd, abd, ad)
 ```
-The first result says that there is no 2-lamp logic for the purpose. The second result says that there is no 3-lamp AND logic but many 3-lamp XOR logics for the purpose. To convert the results to readable texts, see `plan2string`.
+The first result says that there is no 2-lamp logic for the purpose. The second result gives many 3-lamp logics for the purpose. See also [`CombGate`](@ref)
 """
 function CombLogic(lamps::Integer, inputs::AbstractVector{<:Integer}, outputs::AbstractVector{Bool})
 	args = ndigits(inputs[1], base = 2) - true
 	stack = MVector{lamps, UInt8}(undef)
 	top = 1
 	stack[1] = 0
-	ret = Vector{CombGate{Int, SVector{2, UInt8}}}()
+	ret = Vector{CombGate{Int, SVector{lamps, UInt8}}}()
 	cases = 1 << (args + true)
 	while top > 0
 		if top == lamps
@@ -187,10 +204,10 @@ Consider `plan2string(XOR, 4, false, [0x12, 0x09, 0x04])`. It's an `XOR` gate wh
 - `0x04 = 0b00100` means the default state of the third lamp is `OFF` and only `c` is connected to the lamp.
 
 ```jldoctest
-julia> plan2string(XOR, 4, false, [0x12, 0x09, 0x04])
+julia> TR.plan2string(TR.XOR, 4, false, [0x12, 0x09, 0x04])
 "^(~b, ad, c)"
 
-julia> plan2string(AND, 6, (true, [0x7e, 0x70, 0x51]))
+julia> TR.plan2string(TR.AND, 6, (true, [0x7e, 0x70, 0x51]))
 "~&(~bcdef, ~ef, ~ae)"
 ```
 """
@@ -211,13 +228,13 @@ plan2string(f, args, plan::Tuple{Bool, <:AbstractVector{<:Integer}}) = plan2stri
 Convert binary coded `lampstate` into a readable string. `args` tells the number of distinct inputs.
 # Examples
 ```jldoctest
-julia> lampstate2string(0b1111, 4)
+julia> TR.lampstate2string(0b1111, 4)
 "abcd"
 
-julia> lampstate2string(0b11101, 4)
+julia> TR.lampstate2string(0b11101, 4)
 "~acd"
 
-julia> lampstate2string(0b10000, 4)
+julia> TR.lampstate2string(0b10000, 4)
 "~"
 ```
 """

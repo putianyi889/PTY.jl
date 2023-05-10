@@ -1,9 +1,13 @@
-using PTY, Test, Aqua
+using PTY, Test, Aqua, Documenter
 
+DocMeta.setdocmeta!(PTY, :DocTestSetup, :(using PTY); recursive=true)
+
+@testset "Docs" begin
+	doctest(PTY)
+end
 @testset "Aqua" begin
 	Aqua.test_all(PTY)
 end
-
 @testset "TR" begin
 	@testset "elementary logic" begin
 		@test TR.AND(true, false) === TR.AND(false, false) === TR.AND(false, true) === false
