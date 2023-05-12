@@ -24,8 +24,8 @@ end
 			G2 = TR.XorGate(false, 4, [0x12, 0x09, 0x04])
 			@test G1 isa TR.CombGate
 			@test G2 isa TR.CombGate
-			@test String(G1) === "~&(~ac, ~ab)"
-			@test String(G2) === "^(~b, ad, c)"
+			@test TR.gate2string(G1) === "~&(~ac, ~ab)"
+			@test TR.gate2string(G2) === "^(~b, ad, c)"
 		end
 		inputs = 8:15; outputs = [false, true, true, true, true, true, true, false]
 		ret = TR.CombLogic(2, inputs, outputs)

@@ -22,13 +22,34 @@ end
 
 LFSR(plan::AbstractVector{Int}, len::Int) = [LFSR(n, plan, len) for n in 1:(1<<len - 1)]
 
+"""
+	(AndGate|XorGate){T<:Integer, V<:AbstractVector{<:Integer}}(gatestate::Bool, args::T, lampstates::V) <:AbstractGate
+	CombGate{T, V} = Union{AndGate{T, V}, XorGate{T, V}}
+
+Combinatory gates in Terraria. `gatestate` tells the default (when all inputs are zero) state of the gate. `args` tells the number of inputs. `lampstates` lists how the inputs are wired to each logic lamp. 
+
+# Example
+Consider `AndGate(false, 4, [0x12, 0x09, 0x04])`. It's an `AND` gate whose default state is `OFF`. Since there are `4` args (named `a-d`), we consider the last `5` bits of each entry of `lampstates`. The leading bit tells the default state of the lamps. The other 4 bits (from lower to higher) tell which args are wired to the lamp. i.e.,
+- `0x12 = 0b10010` means the default state of the first lamp is `ON` and only `b` is connected to the lamp.
+- `0x09 = 0b01001` means the default state of the second lamp is `OFF` and `a` and `d` are connected to the lamp.
+- `0x04 = 0b00100` means the default state of the third lamp is `OFF` and only `c` is connected to the lamp.
+
+```jldoctest
+julia> TR.AndGate(false, 4, [0x12, 0x09, 0x04])
+&(~b, ad, c)
+```
+
+The output is visualized via [`gate2string`](@ref).
+"""
+AndGate, XorGate, CombGate
+
 abstract type AbstractGate end
-struct AndGate{T<:Integer, V<:AbstractVector{<:Integer}}
+struct AndGate{T<:Integer, V<:AbstractVector{<:Integer}} <:AbstractGate
 	gatestate::Bool
 	args::T
 	lampstates::V
 end
-struct XorGate{T<:Integer, V<:AbstractVector{<:Integer}}
+struct XorGate{T<:Integer, V<:AbstractVector{<:Integer}} <:AbstractGate
 	gatestate::Bool
 	args::T
 	lampstates::V
@@ -39,7 +60,12 @@ for GATE in (:AndGate, :XorGate)
 	@eval Base.:(==)(A::$GATE, B::$GATE) = (A.gatestate == B.gatestate) && (A.args == B.args) && (A.lampstates == B.lampstates)
 end
 
-function Base.String(G::CombGate)
+"""
+	gate2string(G::CombGate)
+
+Convert a `CombGate` into a readable string. See also [`CombGate`](@ref), [`lampstate2string`](@ref), [`logicsymb`](@ref).
+"""
+function gate2string(G::CombGate)
 	ret = IOBuffer()
 	print(ret, ifelse(G.gatestate, '~', ""), logicsymb(G), '(', lampstate2string(G.lampstates[1], G.args))
 	for k in 2:lastindex(G.lampstates)
@@ -48,7 +74,7 @@ function Base.String(G::CombGate)
 	print(ret, ')')
 	return String(take!(ret))
 end
-Base.show(io::IO, G::CombGate) = print(io, String(G))
+Base.show(io::IO, G::CombGate) = print(io, gate2string(G))
 
 function checkTTAND(setup::AbstractVector{<:Integer}, inputs::AbstractVector{<:Integer}, outputs::AbstractVector{Bool})
 	for (input, output) in zip(inputs, outputs)
@@ -96,30 +122,24 @@ Return the lists of possible combinatory logics for given `inputs` and `outputs`
 # Example
 Imagine we want to check if a 4-bit input can be divided by 3. Further, the input is expected to have only one decimal digit, i.e. in `0:9`. We don't care how the logic behaves for inputs `10:15`. The truth table would be
 
-```
-|  in|  out|
-|0000| true|
-|0001|false|
-|0010|false|
-|0011| true|
-|0100|false|
-|0101|false|
-|0110| true|
-|0111|false|
-|1000|false|
-|1001| true|
-```
+|  in|  out||in|out|
+|:-:|:-:|:-:|:-:|:-:|
+|0000| true||0101|false|
+|0001|false||0110| true|
+|0010|false||0111|false|
+|0011| true||1000|false|
+|0100|false||1001| true|
 
-Then we set `inputs = 16:25` (which is `0:9` with the 5th last bit set to `1`) and `outputs = [true, false, false, true, false, false, true, false, false, true]`. Now try to find a configuration with least lamps.
+Now we try to find a configuration with least lamps.
 ```jldoctest
-julia> inputs = 16:25;
+julia> inputs = 16:25; # `0:9` with the 5th last bit set to `1`
 
 julia> outputs = [true, false, false, true, false, false, true, false, false, true];
 
-julia> TR.CombLogic(2, inputs, outputs)
+julia> TR.CombLogic(2, inputs, outputs) # there is no 2-lamp logic
 PTY.TR.CombGate{Int64, StaticArraysCore.SVector{2, UInt8}}[]
 
-julia> TR.CombLogic(3, inputs, outputs)
+julia> TR.CombLogic(3, inputs, outputs) # there are 12 3-lamp logics, all of which use XOR gates
 12-element Vector{PTY.TR.CombGate{Int64, StaticArraysCore.SVector{3, UInt8}}}:
  ^(~b, ad, c)
  ^(~b, abd, bc)
@@ -134,7 +154,7 @@ julia> TR.CombLogic(3, inputs, outputs)
  ^(~acd, bc, c)
  ^(~acd, abd, ad)
 ```
-The first result says that there is no 2-lamp logic for the purpose. The second result gives many 3-lamp logics for the purpose. See also [`CombGate`](@ref)
+See also [`CombGate`](@ref)
 """
 function CombLogic(lamps::Integer, inputs::AbstractVector{<:Integer}, outputs::AbstractVector{Bool})
 	args = ndigits(inputs[1], base = 2) - true
@@ -181,46 +201,16 @@ end
 
 # TODO: convert the results to text
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
+
+"""
+	logicsymb(::typeof(AND|XOR)|::CombGate)
+
+Return `'&'` or `'^'` according to input.
+"""
 logicsymb(::typeof(AND)) = '&'
 logicsymb(::typeof(XOR)) = '^'
 logicsymb(::AndGate) = '&'
 logicsymb(::XorGate) = '^'
-
-"""
-	plan2string(f, args, gatestate, lampstates)
-	plan2string(f, args, (gatestate, lampstates))
-
-Convert the output of `CombLogic` to readable text.
-# Arguments
-- `f::Function`: must be `AND` or `XOR`.
-- `args::Integer`: number of input wires.
-- `gatestate::Bool`: the default state of the gate.
-- `lampstates::AbstractVector{<:Integer}`: tells how the inputs are connected to the lamps.
-
-# Example
-Consider `plan2string(XOR, 4, false, [0x12, 0x09, 0x04])`. It's an `XOR` gate whose default state is `OFF`. Since there are `4` args (named `a-d`), we consider the last `5` bits of each entry of the following `Vector`. The leading bit tells the default state of the lamps. The other 4 bits (from lower to higher) tell which args are connected to the lamp. i.e.,
-- `0x12 = 0b10010` means the default state of the first lamp is `ON` and only `b` is connected to the lamp.
-- `0x09 = 0b01001` means the default state of the second lamp is `OFF` and `a` and `d` are connected to the lamp.
-- `0x04 = 0b00100` means the default state of the third lamp is `OFF` and only `c` is connected to the lamp.
-
-```jldoctest
-julia> TR.plan2string(TR.XOR, 4, false, [0x12, 0x09, 0x04])
-"^(~b, ad, c)"
-
-julia> TR.plan2string(TR.AND, 6, (true, [0x7e, 0x70, 0x51]))
-"~&(~bcdef, ~ef, ~ae)"
-```
-"""
-function plan2string(f, args::Integer, gatestate::Bool, lampstates::AbstractVector{<:Integer})
-	ret = ifelse(gatestate, "~", "") * logicsymb(f) * "(" * lampstate2string(lampstates[1], args)
-	for k in 2:lastindex(lampstates)
-		ret *= ", "
-		ret *= lampstate2string(lampstates[k], args)
-	end
-	ret *= ")"
-	return ret
-end
-plan2string(f, args, plan::Tuple{Bool, <:AbstractVector{<:Integer}}) = plan2string(f, args, plan...)
 
 """
 	lampstate2string(lampstate::Integer, args::Integer)
