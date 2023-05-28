@@ -1,6 +1,7 @@
 module TR
 
 using StaticArrays: MVector, SVector
+using Graphs: SimpleDiGraph, add_edge!
 export AND, XOR
 export AndGate, XorGate, CombGate
 
