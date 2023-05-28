@@ -1,7 +1,8 @@
 module PTY
 
-export TR
+export TR, SpecFun
 
-include("TR.jl")
+include("TR.jl") # Terraria
+include("SpecFun.jl") # Special Functions
 
 end # module
