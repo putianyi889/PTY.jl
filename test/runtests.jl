@@ -17,6 +17,10 @@ end
 		@test TR.XOR(false) === TR.XOR(true, true) === TR.XOR(false, false) === TR.XOR(true, true, false) === TR.XOR(false, false, false) === false
 	end
 
+	@testset "LFSR" begin
+		
+	end
+
 	@testset "comblogic" begin
 
 		@testset "Gates" begin
@@ -30,5 +34,11 @@ end
 		inputs = 8:15; outputs = [false, true, true, true, true, true, true, false]
 		ret = TR.CombLogic(2, inputs, outputs)
 		@test ret == [TR.AndGate(true, 3, [0b1101, 0b1011]), TR.AndGate(true, 3, [0b1110, 0b1011]), TR.AndGate(true, 3, [0b1110, 0b1101])]
+	end
+end
+@testset "special functions" begin
+	@testset "mittagleffler" begin
+		z = rand(100)
+		@test SpecFun.mittleff.(2, -(z.^2)) ≈ cos.(z)
 	end
 end
