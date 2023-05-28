@@ -41,4 +41,8 @@ end
 		z = rand(100)
 		@test SpecFun.mittleff.(2, -(z.^2)) ≈ cos.(z)
 	end
+	@testset "fracpochhammer" begin
+		@test SpecFun.fracpochhammer(1, 2, 3) ≡ 0.25
+		@test SpecFun.fracpochhammer(1, 2, 0.5, 1, 3) ≡ 0.125
+	end
 end
