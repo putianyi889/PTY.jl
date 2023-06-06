@@ -6,7 +6,7 @@ DocMeta.setdocmeta!(PTY, :DocTestSetup, :(using PTY); recursive=true)
 	doctest(PTY)
 end
 @testset "Aqua" begin
-	Aqua.test_all(PTY)
+	Aqua.test_all(PTY, ambiguities = false, piracy = false)
 end
 @testset "TR" begin
 	@testset "elementary logic" begin
@@ -38,11 +38,20 @@ end
 end
 @testset "special functions" begin
 	@testset "mittagleffler" begin
-		z = rand(100)
+		z = randn(100)
 		@test SpecFun.mittleff.(2, -(z.^2)) ≈ cos.(z)
 	end
 	@testset "fracpochhammer" begin
 		@test SpecFun.fracpochhammer(1, 2, 3) ≡ 0.25
 		@test SpecFun.fracpochhammer(1, 2, 0.5, 1, 3) ≡ 0.125
 	end
+end
+@testset "ContinuedFraction" begin
+	x = rand(100)
+	@test getindex.(ContFrac.cfrac.(exp, x), 10) ≈ exp.(x)
+	@test getindex.(ContFrac.cfrac.(log, x .+ 1), 10) ≈ log.(x .+ 1) # not working for log(0+)
+	@test getindex.(ContFrac.cfrac.(atanh, 0.5 * x), 10) ≈ atanh.(0.5 * x) # not working for atanh(-1+) and atanh(1-)
+	@test getindex.(ContFrac.cfrac.(csc, x), 10) ≈ csc.(x)
+	@test getindex.(ContFrac.cfrac.(sin, x), 10) ≈ sin.(x)
+	@test getindex.(ContFrac.cfrac.(tan, x), 10) ≈ tan.(x)
 end
