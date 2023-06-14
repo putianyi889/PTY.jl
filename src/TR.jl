@@ -2,10 +2,38 @@ module TR
 
 using StaticArrays: MVector, SVector
 using Graphs: SimpleDiGraph, add_edge!
+
 export AND, XOR
 export AndGate, XorGate, CombGate
 
+"""
+	AND(args::Bool...)
+
+Return the AND logic in Terraria. See also [`XOR`](@ref)
+# Examples
+```jldoctest
+julia> TR.AND(true, true, true)
+true
+
+julia> TR.AND(true, true, false)
+false
+```
+"""
 @inline AND(args::Bool...) = all(args)
+
+"""
+	XOR(args::Bool)
+
+Return the XOR logic in Terraria. See also [`AND`](@ref)
+# Examples
+```jldoctest
+julia> TR.XOR(true, false, false)
+true
+	
+julia> TR.XOR(true, true, false)
+false
+```
+"""
 @inline XOR(args::Bool...) = sum(args) == 1
 @inline fuse(input::Integer) = isodd(count_ones(input))
 @inline fuse(setup::Integer, input::Integer) = fuse(setup & input)
@@ -22,6 +50,29 @@ function LFSR(state::Int, plan::AbstractVector{Int}, len::Int)
 end
 
 LFSR(plan::AbstractVector{Int}, len::Int) = [LFSR(n, plan, len) for n in 1:(1<<len - 1)]
+
+function LFSRGraph(f::AbstractVector{T}) where T<:Integer
+	G = SimpleDiGraph(length(f) + 1)
+	add_edge!(G, 1, 1)
+	for k in 1:lastindex(f)
+		add_edge!(G, k + 1, f[k] + 1)
+	end
+	G
+end
+
+struct LFSRmap{T<:Integer}
+	f::AbstractVector{T}
+	finv::AbstractVector{<:AbstractSet{T}}
+end
+
+function LFSRmap(f::AbstractVector{T}) where T<:Integer
+	finv = [Set{T}() for k in 0:lastindex(f)]
+	push!(finv[1], 0)
+	for k in 1:lastindex(f)
+		push!(finv[f[k]+1], k)
+	end
+	LFSRmap(f, finv)
+end
 
 """
 	(AndGate|XorGate){T<:Integer, V<:AbstractVector{<:Integer}}(gatestate::Bool, args::T, lampstates::V) <:AbstractGate
