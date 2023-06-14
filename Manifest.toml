@@ -2,7 +2,7 @@
 
 julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "f024436137febd5c4757f6a7a895c849c9c11468"
+project_hash = "d05111c610e514e4ee0cffc105c4280b2a06fb3c"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -16,9 +16,9 @@ version = "0.2.0"
 
 [[deps.ArrayLayouts]]
 deps = ["FillArrays", "LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "4efc22e4c299e49995a38d503d9dbb0544a37838"
+git-tree-sha1 = "8826f66b370c91648a4351062427ba5391ccf953"
 uuid = "4c555306-a7a7-4459-81d9-ec55ddd5c99a"
-version = "1.0.4"
+version = "1.0.5"
 
 [[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -65,9 +65,9 @@ uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "Statistics"]
-git-tree-sha1 = "ed569cb9e7e3590d5ba884da7edc50216aac5811"
+git-tree-sha1 = "589d3d3bff204bdd80ecc53293896b4f39175723"
 uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
-version = "1.1.0"
+version = "1.1.1"
 
 [[deps.Graphs]]
 deps = ["ArnoldiMethod", "Compat", "DataStructures", "Distributed", "Inflate", "LinearAlgebra", "Random", "SharedArrays", "SimpleTraits", "SparseArrays", "Statistics"]
@@ -215,9 +215,9 @@ uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [[deps.StaticArrays]]
 deps = ["LinearAlgebra", "Random", "StaticArraysCore", "Statistics"]
-git-tree-sha1 = "c262c8e978048c2b095be1672c9bee55b4619521"
+git-tree-sha1 = "832afbae2a45b4ae7e831f86965469a24d1d8a83"
 uuid = "90137ffa-7385-5640-81b9-e52037218182"
-version = "1.5.24"
+version = "1.5.26"
 
 [[deps.StaticArraysCore]]
 git-tree-sha1 = "6b7ba252635a5eff6a0b0664a41ee140a1c9e72a"

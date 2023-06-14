@@ -55,3 +55,21 @@ end
 	@test getindex.(ContFrac.cfrac.(sin, x), 10) ≈ sin.(x)
 	@test getindex.(ContFrac.cfrac.(tan, x), 10) ≈ tan.(x)
 end
+@testset "Infinities" begin
+	using PTY.Infs: ∞
+	@testset "construction" begin
+		@test Infs.Infinity(Complex) isa Infs.Infinity{Complex}
+		@test Infs.PosInf(Irrational) isa Infs.PosInf{Irrational}
+		@test Infs.NegInf(AbstractFloat) isa Infs.NegInf{AbstractFloat}
+		@test Infs.NotANumber() isa Infs.NotANumber{Bool}
+	end
+
+	@testset "algebra" begin
+		@test 1 + ∞ ≡ +Int(∞)
+		@test 1.0 + ∞ ≡ 1 + Float64(∞) ≡ +Float64(∞)
+		@test 1 - ∞ ≡ -Int(∞) ≡ Int(-∞)
+		@test ∞ + ∞ ≡ +∞
+		@test ∞ - ∞ ≡ Infs.NotANumber()
+		@test -∞ - ∞ ≡ -∞
+	end
+end
