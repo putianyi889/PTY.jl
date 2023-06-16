@@ -1,7 +1,9 @@
 module Infs
 
-import Base: +, -, ==
-import Base: promote_rule, convert, iszero, isinf, isfinite, isnan, zero, one, oneunit, show, string
+import Base: +, -, ==, *, isless
+import Base: promote_rule, convert, iszero, isinf, isfinite, isnan, zero, one, oneunit, show, string, to_index
+
+import Infinities: ℵ₀
 
 
 # Definitions
@@ -9,30 +11,35 @@ abstract type AbstractInf{T<:Number} end
 abstract type AbstractNaN{T<:Number} end
 const ExtendedNumber{T<:Number} = Union{T, AbstractInf{T}, AbstractNaN{T}}
 
-struct Infinity{T<:Number} <: AbstractInf{T} end
+struct NDiInf{T<:Number} <: AbstractInf{T} end
 struct NotANumber{T<:Number} <: AbstractNaN{T} end
 struct PosInf{T<:Real} <: AbstractInf{T} end
 struct NegInf{T<:Real} <: AbstractInf{T} end
-struct ComplexInf{T<:Complex} <: AbstractInf{T}
-    z::T
+struct DiInf{T<:Real} <: AbstractInf{Complex{T}}
+    z::Complex{T}
 end
+
+const ComplexInf{T<:Real} = NDiInf{Complex{T}}
+const RealInf{T<:Real} = NDiInf{T}
 
 
 # Construct from type
-for Typ in (:Infinity, :PosInf, :NegInf, :NotANumber)
+for Typ in (:UnsignedInf, :PosInf, :NegInf, :NotANumber, :NDiInf, :ComplexInf, :RealInf)
     @eval $Typ(T::Type) = $Typ{T}()
     @eval $Typ() = $Typ(Bool)
 end
 
 
 # IO
-const ∞ = Infinity(Bool)
+const ∞ = PosInf()
+const ±∞ = UnsignedInf()
 show(io::IO, x::ExtendedNumber) = print(io, string(x))
-string(::Infinity{T}) where T = "∞{$T}"
-string(::PosInf{T}) where T = "+∞{$T}"
+string(::RealInf{T}) where T<:Real = "±∞{$T}"
+string(::PosInf{T}) where T = "∞{$T}"
 string(::NegInf{T}) where T = "-∞{$T}"
-string(z::ComplexInf) = "∞($(z.z))"
+string(::ComplexInf{T}) where T = "̃∞{$T}"
 string(::NotANumber{T}) where T = "NaN{$T}"
+string(x::DiInf) = "($(x.z))∞"
 
 
 # Interface
@@ -48,10 +55,13 @@ zero(::Type{ExtendedNumber{T}}) where T = zero(T)
 one(::Type{ExtendedNumber{T}}) where T = one(T)
 oneunit(::Type{ExtendedNumber{T}}) where T = oneunit(T)
 
+to_index(::PosInf{<:Integer}) = ℵ₀
 
 # Promotion and conversion
-promote_rule(::Type{<:AbstractInf{T}}, ::Type{<:AbstractInf{S}}) where {T, S} = ExtendedNumber{promote_type(T, S)}
-promote_rule(::Type{<:AbstractInf{T}}, ::Type{S}) where {T, S<:Number} = ExtendedNumber{promote_type(T, S)}
+for Typ in (AbstractInf, AbstractNaN)
+    @eval promote_rule(::Type{<:$Typ{T}}, ::Type{<:$Typ{S}}) where {T, S} = ExtendedNumber{promote_type(T, S)}
+    @eval promote_rule(::Type{<:$Typ{T}}, ::Type{S}) where {T, S} = ExtendedNumber{promote_type(T, S)}
+end
 #promote_rule(::Type{Infinity{T}}, ::Type{S}) where {T, S} = ExtendedNumber{promote_type(T, S)}
 
 convert(::Type{ExtendedNumber{T}}, x) where {T} = ExtendedNumber{T}(x)
@@ -69,23 +79,25 @@ end
 ExtendedNumber{T}(x::AbstractInf{S}) where {T,S} = AbstractInf{T}(x)
 ExtendedNumber{T}(x::AbstractNaN{S}) where {T,S} = AbstractNaN{T}(x)
 AbstractNaN{T}(::NotANumber) where T = NotANumber(T)
-for Typ in (Infinity, PosInf, NegInf)
+for Typ in (NDiInf, PosInf, NegInf)
     @eval AbstractInf{T}(::$Typ) where T<:Number = $Typ(T)
     @eval (::Type{T})(::$Typ) where T<:Number = $Typ(T)
 end
 
+# Compare
+
+
 # Algebra
-+(::Infinity{T}) where T = PosInf(T)
--(::Infinity{T}) where T = NegInf(T)
+-(::NDiInf{T}) where T = UnsignedInf(T)
+-(::NotANumber{T}) where T = NotANumber(T)
 
 +(::PosInf{T}) where T = PosInf(T)
 +(::NegInf{T}) where T = NegInf(T)
-
 -(::PosInf{T}) where T = NegInf(T)
 -(::NegInf{T}) where T = PosInf(T)
 
-+(x::ExtendedNumber{T}, y::ExtendedNumber{T}) where T<:Number = (+x) + (+y)
--(x::ExtendedNumber{T}, y::ExtendedNumber{T}) where T<:Number = (+x) + (-y)
++(::ExtendedNumber{T}, ::ExtendedNumber{T}) where T<:Number = NotANumber(T)
+-(x::ExtendedNumber{T}, y::ExtendedNumber{T}) where T<:Number = x + (-y)
 
 +(x::ExtendedNumber{T}, y::ExtendedNumber{S}) where {T<:Number,S<:Number} = +(promote(x,y)...)
 -(x::ExtendedNumber{T}, y::ExtendedNumber{S}) where {T<:Number,S<:Number} = -(promote(x,y)...)
@@ -95,9 +107,19 @@ end
 +(::NegInf{T}, ::PosInf{T}) where T = NotANumber(T)
 +(::NegInf{T}, ::NegInf{T}) where T = NegInf(T)
 
-+(::PosInf{T}, ::T) where T<:Number = PosInf(T)
-+(::T, ::PosInf{T}) where T<:Number = PosInf(T)
-+(::NegInf{T}, ::T) where T<:Number = NegInf(T)
-+(::T, ::NegInf{T}) where T<:Number = NegInf(T)
++(x::AbstractInf{T}, ::T) where T<:Number = x
++(::T, x::AbstractInf{T}) where T<:Number = x
+
+
+
+# infinite arrays
+abstract type AbstractInfArray{T, N} <: AbstractArray{T, N} end
+struct InfStepRange{T} <: AbstractRange{T}
+    start::T
+    step::T
+end
+struct InfUnitRange{T} <: AbstractUnitRange{T}
+    start::T
+end
 
 end # module

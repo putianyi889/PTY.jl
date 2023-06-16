@@ -29,3 +29,10 @@ Modules = [PTY.ContFrac]
 ## `PTY.Infs` for infinities
 
 This is an experiment of rewriting `Infinities.jl`. This module is not expected to work at present.
+
+### Type hierarchy
+
+```@example
+using PTY, TypeTree # hide
+print(join(tt(Infs.AbstractInf))) # hide
+```
