@@ -18,8 +18,31 @@ end
 	end
 
 	@testset "Z2 linear algebra" begin
-		@test TR.Z2Vector(0b10110, 5) == [0, 1, 1, 0, 1]
-		@test TR.Z2Matrix([1, 2, 4, 8], (4, 4)) == Diagonal(ones(4))
+		v = TR.Z2Vector(0b10110, 5)
+		M = TR.Z2Matrix([1, 2, 4, 8, 0], (5, 5))
+		@test v == [0, 1, 1, 0, 1]
+		@test M == Diagonal([1, 1, 1, 1, 0])
+
+		v[1:2] = [true, false]
+		@test v == [1, 0, 1, 0, 1]
+
+		M[5,5] = true
+		@test M == Diagonal(ones(5))
+
+		@test zero(v) == zeros(5)
+		@test zero(M) == zeros(5, 5)
+
+		v1 = copy(v)
+		M1 = copy(M)
+		fill!(v1, true)
+		fill!(M1, true)
+		@test v1 == ones(5)
+		@test M1 == ones(5, 5)
+		
+		@test v isa TR.Z2Vector
+		@test v1 isa TR.Z2Vector
+		@test M isa TR.Z2Matrix
+		@test M1 isa TR.Z2Matrix
 	end
 
 	@testset "comblogic" begin
