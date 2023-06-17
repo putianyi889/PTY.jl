@@ -1,4 +1,4 @@
-using PTY, Test, Aqua, Documenter
+using PTY, Test, Aqua, Documenter, LinearAlgebra
 
 DocMeta.setdocmeta!(PTY, :DocTestSetup, :(using PTY); recursive=true)
 
@@ -17,8 +17,9 @@ end
 		@test TR.XOR(false) === TR.XOR(true, true) === TR.XOR(false, false) === TR.XOR(true, true, false) === TR.XOR(false, false, false) === false
 	end
 
-	@testset "LFSR" begin
-		
+	@testset "Z2 linear algebra" begin
+		@test TR.Z2Vector(0b10110, 5) == [0, 1, 1, 0, 1]
+		@test TR.Z2Matrix([1, 2, 4, 8], (4, 4)) == Diagonal(ones(4))
 	end
 
 	@testset "comblogic" begin

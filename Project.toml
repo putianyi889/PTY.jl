@@ -1,13 +1,14 @@
 name = "PTY"
 uuid = "5b83b1ae-c1cb-11e9-23b6-9735346a1d55"
 authors = ["putianyi889 <44583944+putianyi889@users.noreply.github.com>"]
-version = "0.8.0"
+version = "0.8.1"
 
 [deps]
 FillArrays = "1a297f60-69ca-5386-bcde-b61e274b549b"
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 InfiniteArrays = "4858937d-0d70-526a-a4dd-2d5cb5dd786c"
 LazyArrays = "5078a376-72f3-5289-bfd5-ec5146d43c02"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
