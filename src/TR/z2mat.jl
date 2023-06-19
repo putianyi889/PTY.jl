@@ -101,7 +101,7 @@ Z2 matrix stored in a `Vector` where each entry represents a row. `size` specifi
 # Example
 ```jldoctest
 julia> TR.Z2RowMat([1, 3, 5], 3)
-3×3 Z2RowMat{UInt8, UInt8}:
+3×3 PTY.TR.Z2RowMat{UInt8, UInt8}:
  1  0  0
  1  1  0
  1  0  1
@@ -122,7 +122,7 @@ Z2 matrix stored in a `Vector` where each entry represents a column. `size` spec
 # Example
 ```jldoctest
 julia> TR.Z2ColMat([1, 3, 5], 3)
-3×3 Z2ColMat{UInt8, UInt8}:
+3×3 PTY.TR.Z2ColMat{UInt8, UInt8}:
  1  1  1
  0  1  0
  0  0  1
@@ -180,11 +180,11 @@ end
 #similar(M::Z2RowMat; dims) = Z2Matrix(undef, dims)
 
 function fill!(A::Z2RowMat{C,R}, x::Bool) where {C,R}
-    fill!(M.data, ifelse(x, typemax(R), zero(R)))
+    fill!(A.data, ifelse(x, typemax(R), zero(R)))
     A
 end
 function fill!(A::Z2ColMat{C,R}, x::Bool) where {C,R}
-    fill!(M.data, ifelse(x, typemax(C), zero(C)))
+    fill!(A.data, ifelse(x, typemax(C), zero(C)))
     A
 end
 
@@ -198,7 +198,7 @@ Z2 vector stored in an integer `data` where each bit represents an entry. `size`
 
 ```jldoctest
 julia> TR.Z2Vector(0b10110, 5)
-5-element Z2Vector{UInt8}:
+5-element PTY.TR.Z2Vector{UInt8}:
  0
  1
  1

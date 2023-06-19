@@ -28,11 +28,11 @@ Defines [`Z2Vector`](@ref), [`Z2RowMat`](@ref) and [`Z2ColMat`](@ref).
 |:-:|:-:|:-:|:-:|:-:|
 |size|✅|✅|✅|✅|
 |getindex|✅|✅|✅|✅|
-|setindex!|✅|✅|✅|❌|
-|zero|✅|✅|✅|❌|
-|copy|✅|✅|✅|❌|
+|setindex!|✅|✅|✅|✅|
+|zero|✅|✅|✅|✅|
+|copy|✅|✅|✅|✅|
 |similar|✅|❌|❌|❌|
-|fill!|✅|✅|✅|❌|
+|fill!|✅|✅|✅|✅|
 |lmul!|✅|❌|❌|❌|
 |rmul!|✅|❌|❌|❌|
 |+|✅|✅|✅|❌|

@@ -22,6 +22,43 @@ end
 			@test TR.Z2Vector(0b10110, 5) == TR.Z2Vector([0, 1, 1, 0, 1]) == [0, 1, 1, 0, 1]
 			@test TR.Z2RowMat([1, 2, 4, 8, 0], 5) == TR.Z2RowMat(Diagonal([1, 1, 1, 1, 0])) == TR.Z2ColMat([1, 2, 4, 8, 0], 5) == TR.Z2ColMat(Diagonal([1, 1, 1, 1, 0])) == Diagonal([1, 1, 1, 1, 0])
 		end
+
+		@testset "interface" begin
+			v = TR.Z2Vector(0b10110, 5)
+			M = TR.Z2RowMat([1, 3, 7, 15, 30], 5)
+			N = TR.Z2ColMat([1, 3, 7, 15, 30], 5)
+
+			# size
+			@test size(v) == (5, )
+			@test size(M) == size(N) == (5, 5)
+
+			# setindex!, getindex
+			M[5, 1] = true
+			N[1, 5] = true
+			@test M == TR.Z2RowMat([1, 3, 7, 15, 31], 5)
+			@test N == TR.Z2ColMat([1, 3, 7, 15, 31], 5)
+
+			# zero
+			@test zero(M) == zero(N) == zeros(5, 5)
+			@test zero(M) isa TR.Z2RowMat
+			@test zero(N) isa TR.Z2ColMat
+
+			# copy
+			@test copy(M) == M
+			@test copy(N) == N
+			@test copy(M) isa TR.Z2RowMat
+			@test copy(N) isa TR.Z2ColMat
+
+			# fill!
+			Mc = copy(M)
+			Nc = copy(N)
+			fill!(Mc, false)
+			fill!(Nc, false)
+			@test Mc == Nc == zeros(5, 5)
+			fill!(Mc, true)
+			fill!(Nc, true)
+			@test Mc == Nc == ones(5, 5)
+		end
 	end
 
 	@testset "comblogic" begin
