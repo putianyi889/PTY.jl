@@ -231,7 +231,7 @@ function Z2RowMat(A::AbstractMatrix)
     ret = Z2RowMat(undef, m, n)
     ret .= z2number(A)
 end
-function Z2ColMat(A::AbstractMatrix{Bool})
+function Z2ColMat(A::AbstractMatrix)
     m, n = size(A)
     ret = Z2ColMat(undef, m, n)
     ret .= z2number(A)
