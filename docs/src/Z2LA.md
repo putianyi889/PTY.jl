@@ -2,7 +2,7 @@
 
 Since this implementation uses bitwise operations, it's significantly faster than the generic interface provided by [`Nemo.jl`](https://github.com/Nemocas/Nemo.jl).
 
-Defines [`Z2Vector`](@ref), [`Z2RowMat`](@ref) and [`Z2ColMat`](@ref).
+Defines [`Z2Vector`](@ref TR.Z2Vector), [`Z2RowMat`](@ref TR.Z2RowMat) and [`Z2ColMat`](@ref TR.Z2ColMat).
 
 ## Construction
 
@@ -24,20 +24,36 @@ Defines [`Z2Vector`](@ref), [`Z2RowMat`](@ref) and [`Z2ColMat`](@ref).
 
 ## Interface
 
+`getindex` and `setindex!` are only implemented for single entries at the moment, which means accessing a submatrix is relatively slow.
+
 |Method|Z2Vector|Z2RowMat|Z2ColMat|Tested|
 |:-:|:-:|:-:|:-:|:-:|
 |size|✅|✅|✅|✅|
 |getindex|✅|✅|✅|✅|
 |setindex!|✅|✅|✅|✅|
 |zero|✅|✅|✅|✅|
+|one|🔘|✅|✅|❌|
 |copy|✅|✅|✅|✅|
-|similar|✅|❌|❌|❌|
+|similar|✅|✅|✅|❌|
 |fill!|✅|✅|✅|✅|
-|lmul!|✅|❌|❌|❌|
-|rmul!|✅|❌|❌|❌|
+|lmul!|✅|✅|✅|❌|
+|rmul!|✅|✅|✅|❌|
 |+|✅|✅|✅|❌|
-|transpose|❌|❌|❌|❌|
-|adjoint|❌|❌|❌|❌|
+|transpose|🔘|✅|✅|❌|
+|adjoint|🔘|✅|✅|❌|
+|istril|🔘|❌|❌|❌|
+|istriu|🔘|❌|❌|❌|
+|rank|🔘|✅|✅|❌|
+
+## Bitwise operations
+|Operation|Z2Vector|Z2RowMat|Z2ColMat|Tested|
+|:-:|:-:|:-:|:-:|:-:|
+|~|❌|✅|✅|❌|
+|&|❌|✅|✅|❌|
+|||❌|✅|✅|❌|
+|⊻|❌|✅|✅|❌|
+|⊽|❌|✅|✅|❌|
+|⊼|❌|✅|✅|❌|
 
 ## Algebra
 
@@ -46,4 +62,5 @@ Defines [`Z2Vector`](@ref), [`Z2RowMat`](@ref) and [`Z2ColMat`](@ref).
 |`dot(::Z2Vector, ::Z2Vector)`|✅|❌|
 |`*(::Z2RowMat, ::Z2Vector)`|✅|❌|
 |`*(::Z2ColMat, ::Z2Vector)`|✅|❌|
-|`*(::Z2RowMat, ::Z2RowMat)*`|❌|❌|
+|`*(::Z2RowMat, ::Z2RowMat)`|✅|❌|
+|`\(::Z2RowMat, ::Z2RowMat)`|✅|❌|
