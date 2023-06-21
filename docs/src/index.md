@@ -9,7 +9,7 @@ Documentation for PTY.jl
 - `AbstractArray{T, N}(A::BroadcastArray{S, N})` for eltype conversion
 
 ## `PTY.TR` for Terraria
-See also [Z2-linear-algebra](@ref).
+See also [\\mathbb{Z}_2-linear-algebra](@ref).
 
 ```@autodocs
 Modules = [PTY.TR]
