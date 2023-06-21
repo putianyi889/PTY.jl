@@ -69,10 +69,10 @@ Set the `n`-th (counting from zero) last bit of `x` to `y`. See also [`getbit`](
 
 # Example
 ```jldoctest
-julia> string(TR.setbit(0b10110, true, 1), base = 2)
+julia> string(TR.setbit(0b10110, true, 0), base = 2)
 "10111"
 
-julia> string(TR.setbit(0b10110, false, 1), base = 2)
+julia> string(TR.setbit(0b10110, false, 0), base = 2)
 "10110"
 ```
 """
