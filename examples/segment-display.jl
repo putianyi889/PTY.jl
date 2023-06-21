@@ -1,5 +1,6 @@
 using PTY
-using PTY.TR: Z2RowMat, Z2ColMat, CombLogic
+using PTY.TR: Z2RowMat, Z2ColMat, CombLogic, Z2Vector
+using LinearAlgebra
 
 
 #=
@@ -25,7 +26,7 @@ display_states = transpose(Z2ColMat(
     1 0 1 0 0 1 0; # 7
     1 1 1 1 1 1 1; # 8
     1 1 1 1 0 1 1] # 9
-)) # Note that in practice, a number can be regarded as the default state and there only need to be 9 results to display.
+))
 
 #=
 The custom wiring is
@@ -75,3 +76,21 @@ Now we search for valid logics for each gate.
 =#
 inputs = 16:25
 lists = [CombLogic(3, inputs, gate_states[k, :]) for k in 1:7]
+
+
+#=
+Is it possible to have only 2-lamp logics?
+
+We need to check every combination of segments and see if there are 7 2-lamp combinations that are linearly independent.
+=#
+
+combination_list = Int[] # the list of all viable options
+
+for combination in 0:127
+    output = transpose(display_states) * Z2Vector(combination, 7)
+    if !isempty(CombLogic(2, inputs, output))
+        push!(combination_list, combination)
+    end
+end
+
+rank(Z2RowMat(combination_list, 7)) # needs to be full rank for the idea to work
