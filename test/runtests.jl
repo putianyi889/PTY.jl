@@ -148,7 +148,11 @@ end
 @testset "special functions" begin
 	@testset "mittagleffler" begin
 		z = randn(100)
+		x = inv.(z)
 		@test SpecFun.mittleff.(2, -(z.^2)) ≈ cos.(z)
+		@test SpecFun.mittleff.(2, -(x.^2)) ≈ cos.(x)
+		@test SpecFun.mittleff.(0, 1, z) ≈ 1 ./ (1 .- z)
+		@test SpecFun.mittleff.(0, 1, x) ≈ 1 ./ (1 .- x)
 	end
 	@testset "fracpochhammer" begin
 		@test SpecFun.fracpochhammer(1, 2, 3) ≡ 0.25
