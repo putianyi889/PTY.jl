@@ -7,6 +7,8 @@ Documentation for PTY.jl
 - `//` falls back to `/` for float inputs
 - `:` for range construction now supports complex arithmetic progressions
 - `AbstractArray{T, N}(A::BroadcastArray{S, N})` for eltype conversion
+- `eps` supports complex inputs
+- `ceil` and `floor` support complex inputs.
 
 ## `PTY.TR` for Terraria
 See also [\\mathbb{Z}_2-linear-algebra](@ref).

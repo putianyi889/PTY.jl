@@ -1,5 +1,7 @@
 module SpecFun
 
+using SpecialFunctions: gamma
+
 include("SpecFun/mittagleffler.jl")
 
 """

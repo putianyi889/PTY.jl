@@ -153,6 +153,11 @@ end
 		@test SpecFun.mittleff.(2, -(x.^2)) ≈ cos.(x)
 		@test SpecFun.mittleff.(4, z.^4) ≈ (cosh.(z)+cos.(z))./2
 		@test SpecFun.mittleff.(4, x.^4) ≈ (cosh.(x)+cos.(x))./2
+
+		@test_throws MethodError SpecFun.mittleff(im, 1.0) # complex parameter
+		@test SpecFun.mittleff(-1, 1.0) ≈ 1 - ℯ # negative parameter
+		SpecFun.mittleff(2, 1, 2, 1.0) # 3 parameters
+		@test SpecFun.mittleff(1, 5, 0.0) ≈ 1/24 # gamma function
 	end
 	@testset "fracpochhammer" begin
 		@test SpecFun.fracpochhammer(1, 2, 3) ≡ 0.25
