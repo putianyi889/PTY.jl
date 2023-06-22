@@ -151,10 +151,8 @@ end
 		x = inv.(z)
 		@test SpecFun.mittleff.(2, -(z.^2)) ≈ cos.(z)
 		@test SpecFun.mittleff.(2, -(x.^2)) ≈ cos.(x)
-		@test SpecFun.mittleff.(0, 1, z) ≈ 1 ./ (1 .- z)
-		@test SpecFun.mittleff.(0, 1, x) ≈ 1 ./ (1 .- x)
-		@test SpecFun.mittleff.(0, 1, -0.5, 1 .- z.^2) ≈ abs.(z)
-		@test SpecFun.mittleff.(0, 1, -0.5, 1 .- x.^2) ≈ abs.(x)
+		@test SpecFun.mittleff.(4, z.^4) ≈ (cosh.(z)+cos.(z))./2
+		@test SpecFun.mittleff.(4, x.^4) ≈ (cosh.(x)+cos.(x))./2
 	end
 	@testset "fracpochhammer" begin
 		@test SpecFun.fracpochhammer(1, 2, 3) ≡ 0.25
