@@ -1,7 +1,7 @@
 import Base: size, zero, fill!, getindex, promote_shape, setindex!, copy, transpose, adjoint, similar, one
 import Base: *, +, &, |, ⊻, ⊼, ⊽, ~, \
 import Base: UndefInitializer, Dims
-import LinearAlgebra: dot, AdjOrTrans, mul!, rank, det, checksquare, ldiv!, SingularException
+import LinearAlgebra: dot, AdjOrTrans, mul!, rank, det, checksquare, ldiv!, SingularException, lmul!, rmul!
 
 include("z2helper.jl")
 
@@ -189,11 +189,13 @@ function lmul!(x::Bool, v::Z2Vector{T}) where T
     if !x
         v.data = zero(T)
     end
+    v
 end
 function rmul!(v::Z2Vector{T}, x::Bool) where T
     if !x
         v.data = zero(T)
     end
+    v
 end
 
 function +(u::Z2Vector{T}, v::Z2Vector{T}) where T
