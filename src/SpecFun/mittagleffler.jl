@@ -1,4 +1,4 @@
-# Translated from the matlab code https://uk.mathworks.com/matlabcentral/fileexchange/48154-the-mittag-leffler-function
+# Translated by Tianyi Pu from the matlab code https://uk.mathworks.com/matlabcentral/fileexchange/48154-the-mittag-leffler-function
 
 #=
 Copyright (c) 2015, Roberto Garrappa
@@ -38,7 +38,8 @@ function mittleff(α,β,γ,z)
     (α,β,γ,z)=promote(α,β,γ,z)
     T=typeof(α)
     if real(α)<=0 || real(γ)<=0 || !isreal(α) || !isreal(β) || !isreal(γ)
-        ArgumentError("Error in the parameters of the Mittag-Leffler function. α($α) and γ($γ) must be real and positive. β($β) must be real.")
+        # From Tianyi Pu: not actually throwing since the algorithm seems to work for those cases.
+        ArgumentError("Error in the parameters of the Mittag-Leffler function. α($α) and γ($γ) must be real and positive. β($β) must be real.") 
     end
     if abs(γ-1) > eps(T)
         if α>1
