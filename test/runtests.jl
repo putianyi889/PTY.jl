@@ -76,10 +76,10 @@ end
 			N1 = TR.Z2ColMat(n1)
 			N2 = TR.Z2ColMat(n2)
 
-			@test ~M1 == ~.(m1) && isa(~M1, TR.Z2RowMat)
-			@test ~N1 == ~.(n1) && isa(~N1, TR.Z2ColMat)
+			@test ~M1 == (~).(m1) && isa(~M1, TR.Z2RowMat)
+			@test ~N1 == (~).(n1) && isa(~N1, TR.Z2ColMat)
 
-			for op in (:&, :|, :⊻, :⊼, :⊽)
+			for op in (&, |, ⊻, ⊼, ⊽)
 				@test op(M1, M2) == op.(m1, m2) && isa(op(M1, M2), TR.Z2RowMat)
 				@test op(N1, N2) == op.(n1, n2) && isa(op(N1, N2), TR.Z2ColMat)
 			end

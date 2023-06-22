@@ -80,7 +80,7 @@ end
 
 for Typ in (Z2RowMat, Z2ColMat)
     for op in (:zero, :copy, :~)
-        @eval $op(A::$Typ{C,R}) where {C,R} = $Typ{C,R}($op(A.data), A.size)
+        @eval $op(A::$Typ{C,R}) where {C,R} = $Typ{C,R}($op.(A.data), A.size)
     end
     for op in (:&, :|, :⊻, :⊽, :⊼)
         @eval function $op(A::$Typ{C,R}, B::$Typ{C,R}) where {C,R}
