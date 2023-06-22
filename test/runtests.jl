@@ -119,9 +119,8 @@ end
 	end
 end
 @testset "examples" begin
+	function segmentdisplay()
+		include("../examples/segment-display.jl")
+	end
 	@test segmentdisplay() == 6
-end
-
-function segmentdisplay()
-	include("../examples/segment-display.jl")
 end
