@@ -1,7 +1,7 @@
 import Base: size, zero, fill!, getindex, promote_shape, setindex!, copy, transpose, adjoint, similar, one
 import Base: *, +, &, |, ⊻, ⊼, ⊽, ~, \
 import Base: UndefInitializer, Dims
-import LinearAlgebra: dot, AdjOrTrans, mul!, rank, det, checksquare, ldiv!, SingularException
+import LinearAlgebra: dot, AdjOrTrans, mul!, rank, det, checksquare, ldiv!, SingularException, lmul!, rmul!
 
 include("z2helper.jl")
 
@@ -80,7 +80,7 @@ end
 
 for Typ in (Z2RowMat, Z2ColMat)
     for op in (:zero, :copy, :~)
-        @eval $op(A::$Typ{C,R}) where {C,R} = $Typ{C,R}($op(A.data), A.size)
+        @eval $op(A::$Typ{C,R}) where {C,R} = $Typ{C,R}($op.(A.data), A.size)
     end
     for op in (:&, :|, :⊻, :⊽, :⊼)
         @eval function $op(A::$Typ{C,R}, B::$Typ{C,R}) where {C,R}
@@ -97,11 +97,13 @@ for Typ in (Z2RowMat, Z2ColMat)
             if !z2number(x)
                 fill!(A, false)
             end
+            A
         end
         function rmul!(A::$Typ, x::Number)
             if !z2number(x)
                 fill!(A, false)
             end
+            A
         end
 
         function one(A::$Typ{C,R}) where {C,R}
@@ -187,11 +189,13 @@ function lmul!(x::Bool, v::Z2Vector{T}) where T
     if !x
         v.data = zero(T)
     end
+    v
 end
 function rmul!(v::Z2Vector{T}, x::Bool) where T
     if !x
         v.data = zero(T)
     end
+    v
 end
 
 function +(u::Z2Vector{T}, v::Z2Vector{T}) where T
