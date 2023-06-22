@@ -63,6 +63,14 @@ end
 			fill!(Mc, true)
 			fill!(Nc, true)
 			@test Mc == Nc == ones(5, 5)
+
+			# lmul!, rmul!
+			Mc = copy(M)
+			Nc = copy(N)
+			@test lmul!(true, copy(M)) == M == rmul!(copy(M), true)
+			@test lmul!(true, copy(N)) == N == rmul!(copy(N), true)
+			@test lmul!(false, copy(M)) == zero(M) == rmul!(copy(M), false)
+			@test lmul!(false, copy(N)) == zero(N) == rmul!(copy(N), false)
 		end
 
 		@testset "bitwise" begin
