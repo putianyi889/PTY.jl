@@ -113,6 +113,7 @@ for Typ in (Z2RowMat, Z2ColMat)
 
         rank(A::$Typ) = matrank!(copy(A.data))
         det(A::$Typ) = matdet!(copy(A.data))
+        +(A::$Typ, B::$Typ) = A ⊻ B
     end
 end
 
@@ -201,14 +202,6 @@ end
 function +(u::Z2Vector{T}, v::Z2Vector{T}) where T
     promote_shape(u, v)
     Z2Vector(u.data ⊻ v.data, u.size)
-end
-function +(u::Z2RowMat{C,R}, v::Z2RowMat{C,R}) where {C,R}
-    promote_shape(u, v)
-    Z2RowMat{C,R}(u.data .⊻ v.data, u.size)
-end
-function +(u::Z2ColMat{C,R}, v::Z2ColMat{C,R}) where {C,R}
-    promote_shape(u, v)
-    Z2ColMat{C,R}(u.data .⊻ v.data, u.size)
 end
 
 function dot(u::Z2Vector, v::Z2Vector)

@@ -103,12 +103,14 @@ end
 			M = [rand(Bool, 5, 5) for n in 1:100] 
 			AM = [matrix(Z2, M[n]) for n in 1:100]
 			BM = TR.Z2RowMat.(M)
+			CM = TR.Z2ColMat.(M)
 
 			N = [rand(Bool, 5, 5) for n in 1:100] 
 			AN = [matrix(Z2, N[n]) for n in 1:100]
 			BN = TR.Z2RowMat.(N)
+			CN = TR.Z2ColMat.(N)
 
-			@test Matrix.(AM .+ AN) == BM .+ BN
+			@test Matrix.(AM .+ AN) == BM .+ BN == CM .+ CN
 		end
 	end
 
