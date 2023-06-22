@@ -97,11 +97,13 @@ for Typ in (Z2RowMat, Z2ColMat)
             if !z2number(x)
                 fill!(A, false)
             end
+            A
         end
         function rmul!(A::$Typ, x::Number)
             if !z2number(x)
                 fill!(A, false)
             end
+            A
         end
 
         function one(A::$Typ{C,R}) where {C,R}
