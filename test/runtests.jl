@@ -64,6 +64,26 @@ end
 			fill!(Nc, true)
 			@test Mc == Nc == ones(5, 5)
 		end
+
+		@testset "bitwise" begin
+			m1 = rand(Bool, 5, 5)
+			m2 = rand(Bool, 5, 5)
+			n1 = rand(Bool, 5, 5)
+			n2 = rand(Bool, 5, 5)
+
+			M1 = TR.Z2RowMat(m1)
+			M2 = TR.Z2RowMat(m2)
+			N1 = TR.Z2ColMat(n1)
+			N2 = TR.Z2ColMat(n2)
+
+			@test ~M1 == ~.(m1) && isa(~M1, TR.Z2RowMat)
+			@test ~N1 == ~.(n1) && isa(~N1, TR.Z2ColMat)
+
+			for op in (:&, :|, :⊻, :⊼, :⊽)
+				@test op(M1, M2) == op.(m1, m2) && isa(op(M1, M2), TR.Z2RowMat)
+				@test op(N1, N2) == op.(n1, n2) && isa(op(N1, N2), TR.Z2ColMat)
+			end
+		end
 	end
 
 	@testset "comblogic" begin
