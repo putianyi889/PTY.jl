@@ -110,7 +110,23 @@ end
 			BN = TR.Z2RowMat.(N)
 			CN = TR.Z2ColMat.(N)
 
-			@test Matrix.(AM .+ AN) == BM .+ BN == CM .+ CN
+			tB = BM .+ BN
+			tC = CM .+ CN
+			@test Matrix.(AM .+ AN) == tB == tC && eltype(tB) <: TR.Z2RowMat && eltype(tC) <: TR.Z2ColMat
+
+			tB = BM .* BN
+			tC = CM .* CN
+			@test Matrix.(AM .* AN) == BM .* BN == CM .* CN && eltype(tB) <: TR.Z2RowMat && eltype(tC) <: TR.Z2ColMat
+			@test det.(AM) == det.(BM) == det.(CM)
+			@test rank.(AM) == rank.(BM) == rank.(CM)
+
+			# find an invertible matrix
+			while true
+				m = rand(Bool, 5, 5)
+				if isodd(det(m))
+					break
+				end
+			end
 		end
 	end
 
