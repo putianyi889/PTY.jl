@@ -16,6 +16,8 @@ Defines [`Z2Vector`](@ref TR.Z2Vector), [`Z2RowMat`](@ref TR.Z2RowMat) and [`Z2C
 
 ### Matrices
 
+Constructing from `undef` sets all entries to zero since methods are implemented assuming that all higher bits are zero.
+
 |Constructor|Z2RowMat|Z2ColMat|Tested|
 |:-:|:-:|:-:|:-:|
 |from a vector and a bitlength|✅|✅|✅|
@@ -32,7 +34,7 @@ Defines [`Z2Vector`](@ref TR.Z2Vector), [`Z2RowMat`](@ref TR.Z2RowMat) and [`Z2C
 |getindex|✅|✅|✅|✅|
 |setindex!|✅|✅|✅|✅|
 |zero|✅|✅|✅|✅|
-|one|🔘|✅|✅|❌|
+|one|🔘|✅|✅|✅|
 |copy|✅|✅|✅|✅|
 |similar|✅|✅|✅|❌|
 |fill!|✅|✅|✅|✅|

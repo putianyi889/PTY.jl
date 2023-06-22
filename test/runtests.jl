@@ -43,6 +43,11 @@ end
 			@test zero(M) isa TR.Z2RowMat
 			@test zero(N) isa TR.Z2ColMat
 
+			# one
+			@test one(M) == one(Matrix(M)) == one(N)
+			@test one(M) isa TR.Z2RowMat
+			@test one(N) isa TR.Z2ColMat
+
 			# copy
 			@test copy(M) == M
 			@test copy(N) == N
@@ -112,4 +117,11 @@ end
 		@test ∞ - ∞ ≡ Infs.NotANumber()
 		@test -∞ - ∞ ≡ -∞
 	end
+end
+@testset "examples" begin
+	@test segmentdisplay() == 6
+end
+
+function segmentdisplay()
+	include("../examples/segment-display.jl")
 end
