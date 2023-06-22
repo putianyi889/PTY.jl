@@ -1,4 +1,4 @@
-using PTY, Test, Aqua, Documenter, LinearAlgebra
+using PTY, Test, Aqua, Documenter, LinearAlgebra, Nemo
 
 DocMeta.setdocmeta!(PTY, :DocTestSetup, :(using PTY); recursive=true)
 
@@ -96,6 +96,19 @@ end
 				@test op(M1, M2) == op.(m1, m2) && isa(op(M1, M2), TR.Z2RowMat)
 				@test op(N1, N2) == op.(n1, n2) && isa(op(N1, N2), TR.Z2ColMat)
 			end
+		end
+
+		@testset "algebra" begin
+			Z2 = residue_ring(ZZ, 2)
+			M = [rand(Bool, 5, 5) for n in 1:100] 
+			AM = [matrix(Z2, M[n]) for n in 1:100]
+			BM = TR.Z2RowMat.(M)
+
+			N = [rand(Bool, 5, 5) for n in 1:100] 
+			AN = [matrix(Z2, N[n]) for n in 1:100]
+			BN = TR.Z2RowMat.(N)
+
+			@test Matrix.(AM .+ AN) == BM .+ BN
 		end
 	end
 
