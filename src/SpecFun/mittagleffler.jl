@@ -1,4 +1,4 @@
-# Translated from the matlab code https://uk.mathworks.com/matlabcentral/fileexchange/48154-the-mittag-leffler-function
+# Translated by Tianyi Pu from the matlab code https://uk.mathworks.com/matlabcentral/fileexchange/48154-the-mittag-leffler-function
 
 #=
 Copyright (c) 2015, Roberto Garrappa
@@ -37,15 +37,19 @@ Compute the Mittag-Leffler function of one variable `z`. The codes are translate
 function mittleff(α,β,γ,z)
     (α,β,γ,z)=promote(α,β,γ,z)
     T=typeof(α)
-    if real(α)<=0 || real(γ)<=0 || !isreal(α) || !isreal(β) || !isreal(γ)
-        ArgumentError("Error in the parameters of the Mittag-Leffler function. α($α) and γ($γ) must be real and positive. β($β) must be real.")
+    # The warning messages are modified by Tianyi Pu
+    if !isreal(α) || !isreal(β) || !isreal(γ)
+        @warn "This implementation for the Mittag-Leffler function is designed for real parameters α($α), β($β) and γ($γ)."
+    end
+    if real(α)<=0 || real(γ)<=0
+        @warn "This implementation for the Mittag-Leffler function is designed for positive parameters α($α) and γ($γ)."
     end
     if abs(γ-1) > eps(T)
         if α>1
-            ArgumentError("With the three parameters Mittag-Leffler function, the parameter α($α) must satisfy 0<α<1.")
+            @warn "This implementation for the three parameters Mittag-Leffler function is designed for 0<α($α)<1."
         end
         if abs(angle(z*(abs(z)>eps(T)))) <= α*π
-            ArgumentError("With the three parameters Mittag-Leffler function, this code works only when |arg(z)|>απ. z=$z")
+            @warn "This implementation for the three parameters Mittag-Leffler function is designed for |arg(z)|>απ. z=$z"
         end
     end
     ϵ=10*eps(T)

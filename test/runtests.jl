@@ -1,4 +1,4 @@
-using PTY, Test, Aqua, Documenter, LinearAlgebra
+using PTY, Test, Aqua, Documenter, LinearAlgebra, Nemo
 
 DocMeta.setdocmeta!(PTY, :DocTestSetup, :(using PTY); recursive=true)
 
@@ -97,6 +97,37 @@ end
 				@test op(N1, N2) == op.(n1, n2) && isa(op(N1, N2), TR.Z2ColMat)
 			end
 		end
+
+		@testset "algebra" begin
+			Z2 = residue_ring(ZZ, 2)
+			M = [rand(Bool, 5, 5) for n in 1:100] 
+			AM = [matrix(Z2, M[n]) for n in 1:100]
+			BM = TR.Z2RowMat.(M)
+			CM = TR.Z2ColMat.(M)
+
+			N = [rand(Bool, 5, 5) for n in 1:100] 
+			AN = [matrix(Z2, N[n]) for n in 1:100]
+			BN = TR.Z2RowMat.(N)
+			CN = TR.Z2ColMat.(N)
+
+			tB = BM .+ BN
+			tC = CM .+ CN
+			@test Matrix.(AM .+ AN) == tB == tC && eltype(tB) <: TR.Z2RowMat && eltype(tC) <: TR.Z2ColMat
+
+			tB = BM .* BN
+			tC = CM .* CN
+			@test Matrix.(AM .* AN) == BM .* BN == CM .* CN && eltype(tB) <: TR.Z2RowMat && eltype(tC) <: TR.Z2ColMat
+			@test det.(AM) == det.(BM) == det.(CM)
+			@test rank.(AM) == rank.(BM) == rank.(CM)
+
+			# find an invertible matrix
+			while true
+				m = rand(Bool, 5, 5)
+				if isodd(det(m))
+					break
+				end
+			end
+		end
 	end
 
 	@testset "comblogic" begin
@@ -117,7 +148,16 @@ end
 @testset "special functions" begin
 	@testset "mittagleffler" begin
 		z = randn(100)
+		x = inv.(z)
 		@test SpecFun.mittleff.(2, -(z.^2)) ≈ cos.(z)
+		@test SpecFun.mittleff.(2, -(x.^2)) ≈ cos.(x)
+		@test SpecFun.mittleff.(4, z.^4) ≈ (cosh.(z)+cos.(z))./2
+		@test SpecFun.mittleff.(4, x.^4) ≈ (cosh.(x)+cos.(x))./2
+
+		@test_throws MethodError SpecFun.mittleff(im, 1.0) # complex parameter
+		@test SpecFun.mittleff(-1, 1.0) ≈ 1 - ℯ # negative parameter
+		SpecFun.mittleff(2, 1, 2, 1.0) # 3 parameters
+		@test SpecFun.mittleff(1, 5, 0.0) ≈ 1/24 # gamma function
 	end
 	@testset "fracpochhammer" begin
 		@test SpecFun.fracpochhammer(1, 2, 3) ≡ 0.25

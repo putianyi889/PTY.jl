@@ -1,6 +1,6 @@
 module Helper
 
-import Base: //, (:)
+import Base: //, (:), eps, ceil, floor
 import LazyArrays: BroadcastArray, converteltype
 
 //(x::AbstractFloat, y) = x / y
@@ -19,5 +19,9 @@ function (:)(start::Complex, step::Complex, stop::Complex)
 end
 
 AbstractArray{T, N}(A::BroadcastArray{S, N}) where {T, N, S} = BroadcastArray{T,N}(A.f, A.args...)
+
+eps(::Type{Complex{T}}) where T = eps(T)
+ceil(z::Complex) = ceil(real(z)) + ceil(imag(z))im
+floor(z::Complex) = floor(real(z)) + floor(imag(z))im
 
 end # module

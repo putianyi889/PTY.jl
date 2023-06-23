@@ -9,6 +9,7 @@ Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 InfiniteArrays = "4858937d-0d70-526a-a4dd-2d5cb5dd786c"
 LazyArrays = "5078a376-72f3-5289-bfd5-ec5146d43c02"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
@@ -17,13 +18,15 @@ FillArrays = "1"
 Graphs = "1"
 InfiniteArrays = "0.12, 1"
 LazyArrays = "1"
+SpecialFunctions = "1, 2"
 StaticArrays = "1"
 
 [extras]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Nemo = "2edaba10-b0f1-5616-af89-8c11ac63239a"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 
 [targets]
-test = ["Aqua", "Test", "Documenter", "SpecialFunctions", "LinearAlgebra"]
+test = ["Aqua", "Test", "Documenter", "SpecialFunctions", "LinearAlgebra", "Nemo"]
