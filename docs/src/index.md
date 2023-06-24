@@ -11,7 +11,7 @@ Documentation for PTY.jl
 - `ceil` and `floor` support complex inputs.
 
 ## `PTY.TR` for Terraria
-See also [\\mathbb{Z}_2-linear-algebra](@ref).
+See also [``\\mathbb{Z}_2``-linear-algebra](@ref).
 
 ```@autodocs
 Modules = [PTY.TR]
