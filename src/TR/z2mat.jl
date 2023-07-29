@@ -79,6 +79,9 @@ function setindex!(A::Z2ColMat, x::Number, i::Integer, j::Integer)
     A.data[j] = setbit(A.data[j], z2number(x), i-1)
 end
 
+datamask(A::Z2RowMat{C,R}) where {C,R} = (one(R) << A.size) - one(R)
+datamask(A::Z2ColMat{C,R}) where {C,R} = (one(C) << A.size) - one(C)
+
 for Typ in (Z2RowMat, Z2ColMat)
     for op in (:zero, :copy)
         @eval $op(A::$Typ{C,R}) where {C,R} = $Typ{C,R}($op.(A.data), A.size)
@@ -170,6 +173,8 @@ function setindex!(v::Z2Vector, x::Number, i::Integer)
     v.data = setbit(v.data, z2number(x), i-1)
     v
 end
+
+datamask(A::Z2Vector{T}) where T = (one(T) << A.size) - one(T)
 
 zero(v::Z2Vector{T}) where T = Z2Vector{T}(zero(T), v.size)
 copy(v::Z2Vector{T}) where T = Z2Vector{T}(v.data, v.size)

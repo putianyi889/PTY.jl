@@ -85,10 +85,6 @@ julia> string(TR.setbit(0b10110, false, 0), base = 2)
 
 @inline exchangebits(x::Integer, m::Integer, n::Integer) = ifelse(getbit(x,m) == getbit(x,n), x, flipbit(x, m, n))
 
-datamask(A::Z2RowMat{C,R}) where {C,R} = (one(R) << A.size) - one(R)
-datamask(A::Z2ColMat{C,R}) where {C,R} = (one(C) << A.size) - one(C)
-datamask(A::Z2Vector{T}) where T = (one(T) << A.size) - one(T)
-
 function rowmatmulvec(x::AbstractVector{<:Integer}, y::Integer)
     ret = zero(y)
     for u in x
