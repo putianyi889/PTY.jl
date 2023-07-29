@@ -91,7 +91,7 @@ end
 			N1 = TR.Z2ColMat(n1)
 			N2 = TR.Z2ColMat(n2)
 			V1 = TR.Z2Vector(v1)
-			V1 = TR.Z2Vector(v2)
+			V2 = TR.Z2Vector(v2)
 
 			@test ~M1 == (~).(m1) && isa(~M1, TR.Z2RowMat)
 			@test ~N1 == (~).(n1) && isa(~N1, TR.Z2ColMat)
