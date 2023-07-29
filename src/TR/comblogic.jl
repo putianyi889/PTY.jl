@@ -97,7 +97,7 @@ function CombLogic(lamps::Integer, inputs::AbstractVector{<:Integer}, outputs::A
 				if checkTTXOR(stack, inputs, outputs)
 					push!(ret, XorGate(false, args, SVector(stack)))
 				elseif checkTTNXOR(stack, inputs, outputs)
-					push!(ret, XorGate(false, args, SVector(stack)))
+					push!(ret, XorGate(true, args, SVector(stack)))
 				end
 			end
 			top = lamps - true

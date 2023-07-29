@@ -70,6 +70,7 @@ size(A::Z2ColMat) = (A.size, length(A.data))
 
 getindex(A::Z2RowMat, i::Integer, j::Integer) = getbit(A.data[i], j-1)
 getindex(A::Z2ColMat, i::Integer, j::Integer) = getbit(A.data[j], i-1)
+getindex(A::Z2RowMat, i::Integer, j::Colon) = Z2Vector(A.data[i], size(A,2))
 
 function setindex!(A::Z2RowMat, x::Number, i::Integer, j::Integer)
     A.data[i] = setbit(A.data[i], z2number(x), j-1)
@@ -79,7 +80,7 @@ function setindex!(A::Z2ColMat, x::Number, i::Integer, j::Integer)
 end
 
 for Typ in (Z2RowMat, Z2ColMat)
-    for op in (:zero, :copy, :~)
+    for op in (:zero, :copy)
         @eval $op(A::$Typ{C,R}) where {C,R} = $Typ{C,R}($op.(A.data), A.size)
     end
     for op in (:&, :|, :⊻, :⊽, :⊼)
@@ -92,6 +93,11 @@ for Typ in (Z2RowMat, Z2ColMat)
         similar(A::$Typ) = zero(A)
         similar(A::$Typ, dims::Dims{2}) = $Typ(undef, dims...)
         similar(A::$Typ, ::Type{Bool}, dims::Dims{2}) = similar(A, dims)
+
+        function fill!(A::$Typ, x::Number)
+            fill!(A.data, ifelse(z2number(x), datamask(A), zero(eltype(A.data))))
+            A
+        end
 
         function lmul!(x::Number, A::$Typ)
             if !z2number(x)
@@ -114,16 +120,8 @@ for Typ in (Z2RowMat, Z2ColMat)
         rank(A::$Typ) = matrank!(copy(A.data))
         det(A::$Typ) = matdet!(copy(A.data))
         +(A::$Typ, B::$Typ) = A ⊻ B
+        ~(A::$Typ{C,R}) where {C,R} = $Typ(A.data .⊻ datamask(A), A.size)
     end
-end
-
-function fill!(A::Z2RowMat{C,R}, x::Number) where {C,R}
-    fill!(A.data, ifelse(z2number(x), typemax(R), zero(R)))
-    A
-end
-function fill!(A::Z2ColMat{C,R}, x::Number) where {C,R}
-    fill!(A.data, ifelse(z2number(x), typemax(C), zero(C)))
-    A
 end
 
 for op in (:transpose, :adjoint)
@@ -178,11 +176,18 @@ copy(v::Z2Vector{T}) where T = Z2Vector{T}(v.data, v.size)
 similar(v::Z2Vector) = copy(v)
 
 function fill!(v::Z2Vector{T}, x::Number) where T
-    v.data = ifelse(z2number(x), typemax(T), zero(T))
+    v.data = ifelse(z2number(x), datamask(v), zero(T))
     v
 end
 
+for op in (:&, :|, :⊻, :⊽, :⊼)
+    @eval function $op(A::Z2Vector{T}, B::Z2Vector{T}) where T
+        promote_shape(A, B)
+        Z2Vector{T}($op(A.data, B.data), A.size)
+    end
+end
 
+~(v::Z2Vector{T}) where T = Z2Vector(v.data ⊻ datamask(v), length(v))
 
 # algebra
 

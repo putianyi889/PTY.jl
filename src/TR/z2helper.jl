@@ -18,7 +18,7 @@ julia> TR.bit2type(33)
 UInt64
 
 julia> TR.bit2type(100)
-BigInt
+UInt128
 ```
 """
 function bit2type(n::Integer)
@@ -30,10 +30,10 @@ function bit2type(n::Integer)
         UInt32
     elseif n <= 64
         UInt64
-    elseif isinf(n)
-        throw(ArgumentError("doesn't support infinite bits"))
+    elseif n <= 128
+        UInt128
     else
-        BigInt
+        throw(ArgumentError("doesn't support dimension $n"))
     end
 end
 
@@ -84,6 +84,10 @@ julia> string(TR.setbit(0b10110, false, 0), base = 2)
 @inline xorbits(x::Integer, src::Integer, dest::Integer) = x ⊻ (((x>>src) & one(x)) << dest)
 
 @inline exchangebits(x::Integer, m::Integer, n::Integer) = ifelse(getbit(x,m) == getbit(x,n), x, flipbit(x, m, n))
+
+datamask(A::Z2RowMat{C,R}) where {C,R} = (one(R) << A.size) - one(R)
+datamask(A::Z2ColMat{C,R}) where {C,R} = (one(C) << A.size) - one(C)
+datamask(A::Z2Vector{T}) where T = (one(T) << A.size) - one(T)
 
 function rowmatmulvec(x::AbstractVector{<:Integer}, y::Integer)
     ret = zero(y)
