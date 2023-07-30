@@ -18,7 +18,7 @@ julia> TR.bit2type(33)
 UInt64
 
 julia> TR.bit2type(100)
-BigInt
+UInt128
 ```
 """
 function bit2type(n::Integer)
@@ -30,10 +30,10 @@ function bit2type(n::Integer)
         UInt32
     elseif n <= 64
         UInt64
-    elseif isinf(n)
-        throw(ArgumentError("doesn't support infinite bits"))
+    elseif n <= 128
+        UInt128
     else
-        BigInt
+        throw(ArgumentError("doesn't support dimension $n"))
     end
 end
 

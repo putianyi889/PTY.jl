@@ -51,12 +51,12 @@ Constructing from `undef` sets all entries to zero since methods are implemented
 ## Bitwise operations
 |Operation|Z2Vector|Z2RowMat|Z2ColMat|
 |:-:|:-:|:-:|:-:|
-|~|❌|✅|✅|
-|&|❌|✅|✅|
-|\||❌|✅|✅|
-|⊻|❌|✅|✅|
-|⊽|❌|✅|✅|
-|⊼|❌|✅|✅|
+|~|✅|✅|✅|
+|&|✅|✅|✅|
+|\||✅|✅|✅|
+|⊻|✅|✅|✅|
+|⊽|✅|✅|✅|
+|⊼|✅|✅|✅|
 
 ## Algebra
 
