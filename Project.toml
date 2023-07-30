@@ -16,7 +16,7 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 [compat]
 FillArrays = "1"
 Graphs = "1"
-InfiniteArrays = "0.12, 1"
+InfiniteArrays = "0.12, 1, 0.13"
 LazyArrays = "1"
 SpecialFunctions = "1, 2"
 StaticArrays = "1"
