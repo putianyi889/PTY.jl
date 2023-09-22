@@ -188,6 +188,12 @@ end
 		@test Infs.NotANumber() isa Infs.NotANumber{Bool}
 	end
 
+	@testset "comparison" begin
+		@test 1 < +∞
+		@test 1 > -∞
+		@test -∞ ≤ +∞
+	end
+
 	@testset "algebra" begin
 		@test 1 + ∞ ≡ +Int(∞)
 		@test 1.0 + ∞ ≡ 1 + Float64(∞) ≡ +Float64(∞)
@@ -195,6 +201,15 @@ end
 		@test ∞ + ∞ ≡ +∞
 		@test ∞ - ∞ ≡ Infs.NotANumber()
 		@test -∞ - ∞ ≡ -∞
+	end
+end
+@testset "GenericSets" begin
+	using PTY.GenericSets: ∅, ℝ, HalfLine
+	@testset "construction" begin
+		@test ∅ isa AbstractSet
+		@test ℝ isa AbstractSet{Real}
+		@test HalfLine(<,1) isa AbstractSet{Real}
+		@test HalfLine(>=,0) isa AbstractSet{Real}
 	end
 end
 @testset "examples" begin

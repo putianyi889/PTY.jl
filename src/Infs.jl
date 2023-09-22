@@ -1,7 +1,7 @@
 module Infs
 
 import Base: +, -, ==
-import Base: promote_rule, convert, iszero, isinf, isfinite, isnan, zero, one, oneunit, show, string
+import Base: promote_rule, convert, iszero, isinf, isfinite, isnan, zero, one, oneunit, show, string, isless
 
 
 # Definitions
@@ -66,6 +66,7 @@ function ExtendedNumber{T}(x::Number) where T
         T(x)
     end
 end
+ExtendedNumber(x::Number) = ExtendedNumber{typeof(x)}(x)
 ExtendedNumber{T}(x::AbstractInf{S}) where {T,S} = AbstractInf{T}(x)
 ExtendedNumber{T}(x::AbstractNaN{S}) where {T,S} = AbstractNaN{T}(x)
 AbstractNaN{T}(::NotANumber) where T = NotANumber(T)
@@ -73,6 +74,17 @@ for Typ in (Infinity, PosInf, NegInf)
     @eval AbstractInf{T}(::$Typ) where T<:Number = $Typ(T)
     @eval (::Type{T})(::$Typ) where T<:Number = $Typ(T)
 end
+
+# Compare
+isless(::ExtendedNumber, ::NegInf) = false
+isless(x::NegInf, y::ExtendedNumber) = x != ExtendedNumber(y)
+isless(x::ExtendedNumber, y::PosInf) = ExtendedNumber(x) != y
+isless(::PosInf, ::ExtendedNumber) = false
+
+isless(::NegInf, ::NegInf) = false
+isless(::PosInf, ::PosInf) = false
+isless(::NegInf, ::PosInf) = true
+isless(::PosInf, ::NegInf) = false
 
 # Algebra
 +(::Infinity{T}) where T = PosInf(T)
