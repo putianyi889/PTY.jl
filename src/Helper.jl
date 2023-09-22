@@ -29,7 +29,14 @@ floor(z::Complex) = floor(real(z)) + floor(imag(z))im
 """
     demote_type
 
-The inverse of [`promote_type`](@ref)
+The inverse of [`promote_type`](https://docs.julialang.org/en/v1/base/base/#Base.promote_type)
+
+# Example
+
+```jldoctest
+julia> Helper.demote_type(Float64, Int)
+Int64
+```
 """
 demote_type(a) = a
 demote_type(a,b) = ifelse(promote_type(a,b)==a, b,a)
@@ -39,6 +46,13 @@ demote_type(a,b...) = demote_type(a, demote_type(b...))
     _invop(op)
 
 Return `invop` such that `invop(a,b) = op(b,a)`.
+
+# Example
+
+```jldoctest
+julia> Helper._invop(<)
+> (generic function with 3 methods)
+```
 """
 _invop(::typeof(>)) = <
 _invop(::typeof(<)) = >
@@ -46,5 +60,12 @@ _invop(::typeof(≥)) = ≤
 _invop(::typeof(≤)) = ≥
 _invop(::typeof(==)) = ==
 _invop(::typeof(!=)) = !=
+
+_notop(::typeof(>)) = ≤
+_notop(::typeof(<)) = ≥
+_notop(::typeof(≥)) = <
+_notop(::typeof(≤)) = >
+_notop(::typeof(==)) = !=
+_notop(::typeof(!=)) = ==
 
 end # module

@@ -48,8 +48,6 @@ in(x, S::LazyUnion) = any(Fix1(in,x), S.sets)
 in(x, P::CartesianProduct) = all(map(in, x, P.sets))
 
 # issubset
-issubset(S1::HalfLine{LR,:O}, S2::HalfLine{LR,OC}) where {LR,OC} = in(S1.a, closure(S2))
-issubset(S1::HalfLine{LR,:C}, S2::HalfLine{LR,OC}) where {LR,OC} = in(S1.a, S2)
 issubset(S1::AbstractSet{<:Real}, S2::HalfLine{:L,:C}) = infimum(S1) ∈ S2
 issubset(S1::AbstractSet{<:Real}, S2::HalfLine{:R,:C}) = supremum(S1) ∈ S2
 issubset(S1::AbstractSet{<:Real}, S2::HalfLine{LR,:O}) where LR = S1 ⊆ closure(S2) && S2.a ∉ S1

@@ -2,6 +2,7 @@ module GenericSets
 
 import Base: in, intersect, issubset, show, union, Fix1, minimum, maximum, setdiff, length
 using PTY.Infs: ∞
+using PTY.Helper: _invop, _notop
 using LinearAlgebra: norm
 
 export interior, closure

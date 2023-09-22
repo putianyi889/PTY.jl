@@ -28,3 +28,10 @@ union(S1::HalfLine{:R}, S2::HalfLine{:L}) = S2 ∪ S1
 
 intersect(S1::LazyIntersection{T}, S2::LazyIntersection{S}) where {T,S} = LazyIntersection{promote_type(T,S)}(S1.sets...,S2.sets...)
 union(S1::LazyUnion{T}, S2::LazyUnion{S}) where {T,S} = LazyUnion{promote_type(T,S)}(S1.sets...,S2.sets...)
+
+# setdiff
+setdiff(S::AbstractSet, ::EmptySet) = S
+setdiff(::EmptySet, ::AbstractSet) = ∅
+setdiff(::EmptySet, ::EmptySet) = ∅
+setdiff(::UniversalSet{Real}, S::HalfLine) = HalfLine(_notop(_cmp(S)), S.a)
+setdiff(S1::HalfLine, S2::HalfLine) = S1 ∩ setdiff(ℝ, S2)

@@ -204,12 +204,58 @@ end
 	end
 end
 @testset "GenericSets" begin
-	using PTY.GenericSets: ∅, ℝ, HalfLine
+	using PTY.GenericSets: ∅, ℝ, HalfLine, infimum, supremum, interior, closure, boundary
 	@testset "construction" begin
 		@test ∅ isa AbstractSet
 		@test ℝ isa AbstractSet{Real}
 		@test HalfLine(<,1) isa AbstractSet{Real}
 		@test HalfLine(>=,0) isa AbstractSet{Real}
+	end
+
+	@testset "interfaces" begin
+		A = ∅
+		B = HalfLine(>, 0)
+		C = HalfLine(≤, 1)
+		D = Set(1)
+		E = B ∩ C
+
+		@testset "length" begin
+			@test length(∅) == 0
+			@test length(B) == +∞
+			@test length(E) == +∞
+		end
+
+		@testset "infsup" begin
+			@test infimum(D) == supremum(D) == 1
+			@test infimum(B) == infimum(E) == 0
+			@test supremum(B) == +∞
+			@test infimum(C) == -∞
+			@test supremum(C) == supremum(E) == 1
+		end
+
+		@testset "interior" begin
+			@test interior(A) == ∅
+			@test interior(B) == HalfLine(>, 0)
+			@test interior(C) == HalfLine(<, 1)
+			@test interior(D) == ∅
+			@test interior(E) == HalfLine(>, 0) ∩ HalfLine(<, 1)
+		end
+
+		@testset "closure" begin
+			@test closure(A) == ∅
+			@test closure(B) == HalfLine(≥, 0)
+			@test closure(C) == HalfLine(≤, 1)
+			@test closure(D) == D
+			@test closure(E) == HalfLine(≥, 0) ∩ HalfLine(≤, 1)
+		end
+
+		@testset "boundary" begin
+			@test boundary(A) == ∅
+			@test boundary(B) == Set(0)
+			@test boundary(C) == Set(1)
+			@test boundary(D) == D
+			@test_skip boundary(E) == Set([0,1])
+		end
 	end
 end
 @testset "examples" begin
