@@ -52,10 +52,10 @@ Half-infinite interval. `LR ∈ (:L,:R)` (referring to left and right) and `OC �
 # Example
 
 ```jldoctest
-julia> HalfLine{:R,:O}(2)
+julia> GenericSets.HalfLine{:R,:O}(2)
 {x|x<2}
 
-julia> HalfLine(≥,1)
+julia> GenericSets.HalfLine(≥,1)
 {x|x>=1}
 ```
 """

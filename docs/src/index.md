@@ -2,13 +2,20 @@
 
 Documentation for PTY.jl
 
-## Type piracies by `PTY.Helper`
+## `PTY.Helper`
+
+### Type piracies
 
 - `//` falls back to `/` for float inputs
 - `:` for range construction now supports complex arithmetic progressions
 - `AbstractArray{T, N}(A::BroadcastArray{S, N})` for eltype conversion
 - `eps` supports complex inputs
 - `ceil` and `floor` support complex inputs.
+
+### Tools
+```@autodocs
+Modules = [PTY.Helper]
+```
 
 ## `PTY.TR` for Terraria
 See also [``\\mathbb{Z}_2``-linear-algebra](@ref).
