@@ -18,7 +18,7 @@ Modules = [PTY.Helper]
 ```
 
 ## `PTY.TR` for Terraria
-See also [``\\mathbb{Z}_2``-linear-algebra](@ref).
+See also [``\mathbb{Z}_2``-linear-algebra](@ref).
 
 ```@autodocs
 Modules = [PTY.TR]

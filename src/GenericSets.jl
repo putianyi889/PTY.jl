@@ -1,13 +1,11 @@
 module GenericSets
 
-import Base: in, intersect, issubset, show, union, Fix1, minimum, maximum, setdiff, length
+import Base: in, intersect, issubset, show, union, Fix1, minimum, maximum, setdiff, length, setdiff!
 using PTY.Infs: ∞
 using PTY.Helper: _invop, _notop
 using LinearAlgebra: norm
 
 export interior, closure
-
-include("GenericSets/helper.jl")
 
 struct EmptySet <: AbstractSet{Any} end
 """
@@ -16,7 +14,6 @@ struct EmptySet <: AbstractSet{Any} end
 The empty set.
 """
 const ∅ = EmptySet()
-@subset_pair EmptySet AbstractSet
 
 """
     UniversalSet{T} <: AbstractSet{T}
@@ -33,7 +30,6 @@ const ℝ = UniversalSet{Real}()
 const ℂ = UniversalSet{Complex}()
 const ℤ = UniversalSet{Integer}()
 const ℚ = UniversalSet{Rational{Integer}}()
-@subset_pair_with_T AbstractSet UniversalSet
 
 const AbsFiniteDimVecSet{N,T} = AbstractSet{NTuple{N,T}}
 
@@ -98,12 +94,11 @@ LazyIntersection(S::AbstractSet...) = LazyIntersection{promote_type(map(eltype,S
 LazyUnion(S::AbstractSet...) = LazyUnion{promote_type(map(eltype,S)...)}(S)
 Interval{OC1,OC2}(a, b) where {OC1,OC2} = HalfLine{:L,OC1}(a) ∩ HalfLine{:R,OC2}(b)
 
-@subset_pair EmptySet LazyIntersection
-
 struct CartesianProduct{T,S} <: AbstractSet{T}
     sets::S
 end
 
+include("GenericSets/helper.jl")
 include("GenericSets/interface.jl")
 include("GenericSets/operation.jl")
 include("GenericSets/io.jl")

@@ -1,21 +1,3 @@
-macro subset_pair(A, B)
-    esc(quote
-        issubset(::$A, ::$B) = true
-        union(::$A, S::$B) = S
-        union(S::$B, ::$A) = S
-        intersect(S::$A, ::$B) = S
-        intersect(::$B, S::$A) = S
-    end)
-end
-macro subset_pair_with_T(A, B)
-    esc(quote
-        issubset(::$A{<:T}, ::$B{T}) where T = true
-        union(::$A{<:T}, S::$B{T}) where T = S
-        union(S::$B{T}, ::$A{<:T}) where T = S
-        intersect(S::$A{<:T}, ::$B{T}) where T = S
-        intersect(::$B{T}, S::$A{<:T}) where T = S
-    end)
-end
 @inline _subsetintersect(s1,s2) = s1⊆s2 ? s1 : s2
 @inline _subsetunion(s1,s2) = s1⊆s2 ? s2 : s1
 

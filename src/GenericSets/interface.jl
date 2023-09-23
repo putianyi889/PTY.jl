@@ -2,6 +2,7 @@
 length(::EmptySet) = 0
 length(::HalfLine) = +∞
 length(::Interval) = +∞
+length(::UniversalSet{Real}) = +∞
 
 # infimum & supremum
 infimum(S::AbstractSet) = isfinite(length(S)) ? minimum(S) : throw(MethodError(infimum, S))
@@ -48,6 +49,39 @@ in(x, S::LazyUnion) = any(Fix1(in,x), S.sets)
 in(x, P::CartesianProduct) = all(map(in, x, P.sets))
 
 # issubset
+for (A,B) in ((EmptySet, AbstractSet),)
+    @eval begin
+        issubset(::$A, ::$B) = true
+        union(::$A, S::$B) = S
+        union(S::$B, ::$A) = S
+        intersect(S::$A, ::$B) = S
+        intersect(::$B, S::$A) = S
+    end
+end
+for A in (EmptySet,)
+    @eval begin
+        Base.issubset(::$A, ::$A) = true
+        Base.union(::$A, S::$A) = S
+        Base.intersect(S::$A, ::$A) = S
+    end
+end
+for (A,B) in ((AbstractSet, UniversalSet), (UniversalSet, UniversalSet))
+    @eval begin
+        issubset(::$A{<:T}, ::$B{T}) where T = true
+        union(::$A{<:T}, S::$B{T}) where T = S
+        union(S::$B{T}, ::$A{<:T}) where T = S
+        intersect(S::$A{<:T}, ::$B{T}) where T = S
+        intersect(::$B{T}, S::$A{<:T}) where T = S
+    end
+end
+for A in (UniversalSet,)
+    @eval begin
+        issubset(::$A{T}, ::$A{T}) where T = true
+        union(::$A{T}, S::$A{T}) where T = S
+        intersect(S::$A{T}, ::$A{T}) where T = S
+    end
+end
+
 issubset(S1::AbstractSet{<:Real}, S2::HalfLine{:L,:C}) = infimum(S1) ∈ S2
 issubset(S1::AbstractSet{<:Real}, S2::HalfLine{:R,:C}) = supremum(S1) ∈ S2
 issubset(S1::AbstractSet{<:Real}, S2::HalfLine{LR,:O}) where LR = S1 ⊆ closure(S2) && S2.a ∉ S1

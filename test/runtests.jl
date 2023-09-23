@@ -212,7 +212,7 @@ end
 		@test HalfLine(>=,0) isa AbstractSet{Real}
 	end
 
-	@testset "interfaces" begin
+	@testset "interface" begin
 		A = ∅
 		B = HalfLine(>, 0)
 		C = HalfLine(≤, 1)
@@ -255,6 +255,48 @@ end
 			@test boundary(C) == Set(1)
 			@test boundary(D) == D
 			@test_skip boundary(E) == Set([0,1])
+		end
+	end
+
+	@testset "operation" begin
+		A = ∅
+		B = HalfLine(>, 0)
+		C = HalfLine(≤, 1)
+		D = HalfLine(<, 0)
+		E = HalfLine(≥, 1)
+		Y = ℝ
+		Z = Set(1)
+		
+		@testset "issubset" begin
+			for AA in (A,B,C,D,E,Y,Z)
+				@test A ∩ AA == AA ∩ A == A
+				@test A ∪ AA == AA ∪ A == Y ∩ AA == AA ∩ Y == AA
+				@test Y ∪ AA == AA ∪ Y == Y
+				@test A ⊆ AA
+				@test AA ⊆ Y
+			end
+			for (AA,BB) in ((B,B),(E,B),(Z,B),(C,C),(D,C),(Z,C),(D,D),(E,E),(Z,E))
+				@test AA ⊆ BB
+				@test AA ∩ BB == BB ∩ AA == AA
+				@test AA ∪ BB == BB ∪ AA == BB
+			end
+		end
+
+		@testset "intersect" begin
+			@test B ∩ D == D ∩ B == D ∩ E == E ∩ D == D ∩ Z == Z ∩ D == A
+			@test B ∩ C isa GenericSets.Interval
+			@test C ∩ B isa GenericSets.Interval
+			@test C ∩ E == E ∩ C == Z
+		end
+
+		@testset "union" begin
+			@test B ∪ D isa GenericSets.LazyUnion
+			@test D ∪ B isa GenericSets.LazyUnion
+			@test D ∪ E isa GenericSets.LazyUnion
+			@test E ∪ D isa GenericSets.LazyUnion
+			@test D ∪ Z isa GenericSets.LazyUnion
+			@test Z ∪ D isa GenericSets.LazyUnion
+			@test B ∪ C == C ∪ B == C ∪ E == E ∪ C == ℝ
 		end
 	end
 end
