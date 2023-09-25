@@ -17,6 +17,8 @@ infimum(S::LazyIntersection) = maximum(map(infimum, S.sets))
 supremum(S::LazyIntersection) = minimum(map(supremum, S.sets))
 
 # minimum & maximum
+minimum(::EmptySet) = throw(MethodError(minimum, ∅))
+maximum(::EmptySet) = throw(MethodError(maximum, ∅))
 @abstract_minmax HalfLine
 @abstract_minmax ReduceSets
 
@@ -31,7 +33,7 @@ closure(B::Ball{N,OC,T}) where {N,OC,T} = Ball{N,:C,T}(B.c,B.r)
 interior(S::HalfLine{LR,OC}) where {LR,OC} = HalfLine{LR,:O}(S.a)
 closure(S::HalfLine{LR,OC}) where {LR,OC} = HalfLine{LR,:C}(S.a)
 
-interior(S::Interval) = interior(S.sets[1]) ∩ interior(S.sets[2])
+interior(S::LazyIntersection) = intersect(map(interior, S.sets)...)
 closure(S::Interval) = closure(S.sets[1]) ∩ closure(S.sets[2])
 
 # in

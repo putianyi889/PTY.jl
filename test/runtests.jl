@@ -233,6 +233,17 @@ end
 			@test supremum(C) == supremum(E) == 1
 		end
 
+		@testset "minmax" begin
+			@test_throws MethodError minimum(A)
+			@test_throws MethodError maximum(A)
+			@test_throws ArgumentError minimum(B)
+			@test maximum(B) == +∞
+			@test minimum(C) == -∞
+			@test maximum(C) == 1
+			@test_throws ArgumentError minimum(E)
+			@test maximum(E) == 1
+		end
+
 		@testset "interior" begin
 			@test interior(A) == ∅
 			@test interior(B) == HalfLine(>, 0)
