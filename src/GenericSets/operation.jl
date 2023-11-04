@@ -69,7 +69,6 @@ end
 
 # setdiff
 setdiff(S::AbstractSet, ::EmptySet) = S
-setdiff(::EmptySet, ::AbstractSet) = ∅
 setdiff(::EmptySet, ::EmptySet) = ∅
 setdiff(::UniversalSet{Real}, S::HalfLine) = HalfLine(_notop(_cmp(S)), S.a)
 setdiff(S1::HalfLine, S2::HalfLine) = S1 ∩ setdiff(ℝ, S2)

@@ -300,7 +300,7 @@ end
 		
 		@testset "issubset" begin
 			for AA in (A,B,C,D,E,Y,Z)
-				@test A ∩ AA == AA ∩ A == A
+				@test A ∩ AA == AA ∩ A == setdiff(A, AA) == setdiff(AA, Y) == A
 				@test A ∪ AA == AA ∪ A == Y ∩ AA == AA ∩ Y == AA
 				@test Y ∪ AA == AA ∪ Y == Y
 				@test A ⊆ AA
@@ -310,6 +310,7 @@ end
 				@test AA ⊆ BB
 				@test AA ∩ BB == BB ∩ AA == AA
 				@test AA ∪ BB == BB ∪ AA == BB
+				@test setdiff(AA, BB) == ∅
 			end
 		end
 
