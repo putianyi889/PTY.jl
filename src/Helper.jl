@@ -1,6 +1,6 @@
 module Helper
 
-import Base: //, (:), eps, ceil, floor
+import Base: //, (:), eps, ceil, floor, front, tail
 import LazyArrays: BroadcastArray, converteltype
 
 export demote_type
@@ -67,5 +67,8 @@ _notop(::typeof(≥)) = <
 _notop(::typeof(≤)) = >
 _notop(::typeof(==)) = !=
 _notop(::typeof(!=)) = ==
+
+front(A::AbstractVector) = A[1:end-1]
+tail(A::AbstractVector) = A[2:end]
 
 end # module

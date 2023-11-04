@@ -11,6 +11,7 @@ Documentation for PTY.jl
 - `AbstractArray{T, N}(A::BroadcastArray{S, N})` for eltype conversion
 - `eps` supports complex inputs
 - `ceil` and `floor` support complex inputs.
+- `Base.front` and `Base.tail` support vectors.
 
 ### Tools
 ```@autodocs
