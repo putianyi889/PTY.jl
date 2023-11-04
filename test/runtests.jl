@@ -177,6 +177,17 @@ end
 		@test SpecFun.AffineMap(C) == C == B
 		@test one(A) == one(B) == identity == inv(A)∘A == A∘inv(A) == inv(B)∘B == B∘inv(B)
 		@test_throws InexactError SpecFun.AffineMap(A)
+
+		@test SpecFun.LinearFractionalMap(1=>Inf, Inf=>0, 0=>1) == SpecFun.LinearFractionalMap(Inf=>0, 0=>1, 1=>Inf) == SpecFun.LinearFractionalMap(0=>1, 1=>Inf, Inf=>0)
+
+		D = SpecFun.LinearFractionalMap(1=>Inf, Inf=>0, 0=>1)
+		@test isinf(D(1))
+		@test D(Inf) == 0
+		@test D(0) == 1
+
+		E = SpecFun.AffineMap(0=>0, 1=>4)
+		@test E(0) == 0
+		@test E(1) == 4
 	end
 end
 @testset "ContinuedFraction" begin
