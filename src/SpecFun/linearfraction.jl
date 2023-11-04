@@ -43,8 +43,8 @@ A linear fractional map that maps `(z1,z2,z3)` to `(w1,w2,w3)`.
 julia> PTY.SpecFun.LinearFractionalMap(0=>-im, 1=>1, Inf=>im)
 x → ((1.0 - 1.0im)x - 1.0 - 1.0im) / ((-1.0 - 1.0im)x + 1.0 - 1.0im)
 
-julia> PTY.SpecFun.LinearFractionalMap(0=>Inf, 1=>1, Inf=>0)
-x → (0.0x + 1.0) / (1.0x + 0.0)
+julia> PTY.SpecFun.LinearFractionalMap(0=>Inf, Inf=>0, 1=>1)
+x → (0.0x - 1.0) / (-1.0x + 0.0)
 ```
 """
 LinearFractionalMap(p1::Pair, p2::Pair, p3::Pair) = inv(normal_lf_map(p1.second,p2.second,p3.second)) ∘ normal_lf_map(p1.first,p2.first,p3.first)
@@ -105,7 +105,7 @@ function AffineMap(M::AbstractLinearFractionalMap)
     if iszero(M.c)
         AffineMap(M.a/M.d, M.b/M.d)
     else
-        throw(InexactError(AffineMap, AffineMap, M))
+        throw(InexactError(:AffineMap, AffineMap, M))
     end
 end
 
@@ -128,7 +128,7 @@ end
 (M::AffineMap)(x::Number) = M.a*x + M.b
 
 ∘(M::AbstractLinearFractionalMap, N::AbstractLinearFractionalMap) = LinearFractionalMap(M.a*N.a+M.b*N.c, M.a*N.b+M.b*N.d, M.c*N.a+M.d*N.c, M.c*N.b+M.d*N.d)
-∘(M::AffineMap, N::AffineMap) = Affinemap(M.a*N.a, M.a*N.b + M.b)
+∘(M::AffineMap, N::AffineMap) = AffineMap(M.a*N.a, M.a*N.b + M.b)
 
 function ==(M::AbstractLinearFractionalMap, N::AbstractLinearFractionalMap)
     if iszero(M.c)
