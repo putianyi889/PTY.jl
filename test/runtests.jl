@@ -169,6 +169,14 @@ end
 		@test SpecFun.fracpochhammer(1, 2, 3) ≡ 0.25
 		@test SpecFun.fracpochhammer(1, 2, 0.5, 1, 3) ≡ 0.125
 	end
+	@testset "linearfraction" begin
+		A = SpecFun.LinearFractionalMap(1, 2, 3, 4)
+		B = SpecFun.AffineMap(1, 2)
+		C = SpecFun.LinearFractionalMap(B)
+
+		@test SpecFun.AffineMap(C) == C == B
+		@test one(A) == one(B) == identity
+	end
 end
 @testset "ContinuedFraction" begin
 	x = rand(100)

@@ -1,6 +1,6 @@
 module Helper
 
-import Base: //, (:), eps, ceil, floor, front, tail
+import Base: //, (:), eps, ceil, floor, front, tail, ==
 import LazyArrays: BroadcastArray, converteltype
 
 export demote_type, str_coef, str_add
@@ -89,5 +89,8 @@ function str_add(s::AbstractString)
     end
 end
 str_add(x) = str_add(string(x))
+
+==(f::Function, ::typeof(identity)) = isone(f)
+==(::typeof(identity), f::Function) = isone(f)
 
 end # module

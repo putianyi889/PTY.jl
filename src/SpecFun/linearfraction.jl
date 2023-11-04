@@ -1,4 +1,4 @@
-import Base: one, isone, inv, ∘, promote_rule, show
+import Base: one, isone, inv, ∘, promote_rule, show, getproperty, ==
 using PTY.Helper: str_coef, str_add
 
 """
@@ -48,6 +48,7 @@ x → (0.0x + 1.0) / (1.0x + 0.0)
 ```
 """
 LinearFractionalMap(p1::Pair, p2::Pair, p3::Pair) = inv(normal_lf_map(p1.second,p2.second,p3.second)) ∘ normal_lf_map(p1.first,p2.first,p3.first)
+LinearFractionalMap(M::AbstractLinearFractionalMap) = LinearFractionalMap(M.a, M.b, M.c, M.d)
 function normal_lf_map(z1,z2,z3)
     z1,z2,z3 = promote(z1,z2,z3)
     if z1==z2 || z1==z3 || z2==z3
@@ -100,6 +101,13 @@ end
 AffineMap(a::T,b::T) where T = AffineMap{float(T)}(float(a),float(b))
 AffineMap(a,b) = AffineMap(promote(a,b)...)
 AffineMap(p1::Pair, p2::Pair) = AffineMap((p2.second-p1.second) / (p2.first-p1.first), (p2.first*p1.second - p1.first*p2.second) / (p2.first-p1.first))
+function AffineMap(M::AbstractLinearFractionalMap)
+    if iszero(M.c)
+        AffineMap(M.a/M.d, M.b/M.d)
+    else
+        throw(InexactError(AffineMap, AffineMap, M))
+    end
+end
 
 inv(M::AbstractLinearFractionalMap) = LinearFractionalMap(-M.d, M.b, M.c, -M.a)
 inv(M::AffineMap) = AffineMap(inv(M.a), -M.b/M.a)
@@ -121,6 +129,14 @@ end
 
 ∘(M::AbstractLinearFractionalMap, N::AbstractLinearFractionalMap) = LinearFractionalMap(M.a*N.a+M.b*N.c, M.a*N.b+M.b*N.d, M.c*N.a+M.d*N.c, M.c*N.b+M.d*N.d)
 ∘(M::AffineMap, N::AffineMap) = Affinemap(M.a*N.a, M.a*N.b + M.b)
+
+function ==(M::AbstractLinearFractionalMap, N::AbstractLinearFractionalMap)
+    if iszero(M.c)
+        M.a/M.d == N.a/N.d && M.b/M.d == N.b/N.d && iszero(N.c)
+    else
+        M.a/M.c == N.a/N.c && M.b/M.c == N.b/N.c && M.d/M.c == N.d/N.c
+    end
+end
 
 show(io::IO, ::MIME"text/plain", M::LinearFractionalMap) = print(io, "x → ", str_coef(str_coef(M.a)*"x "*str_add(M.b)), " / ", str_coef(str_coef(M.c)*"x "*str_add(M.d)))
 show(io::IO, ::MIME"text/plain", M::AffineMap) = print(io, "x → ", str_coef(M.a), "x ", str_add(M.b))
