@@ -12,6 +12,12 @@ abstract type AbstractLinearFractionalMap{T} <: Function end
     LinearFractionalMap(a, b, c, d)
 
 The function ``x\\to \\frac{ax+b}{cx+d}``
+
+# Example
+```jldoctest
+julia> PTY.SpecFun.LinearFractionalMap(1, 2, 3, 4)
+x → (1.0x + 2.0) / (3.0x + 4.0)
+```
 """
 struct LinearFractionalMap{T} <: AbstractLinearFractionalMap{T}
     a::T
@@ -58,6 +64,21 @@ function normal_lf_map(z1,z2,z3)
     end
 end
 
+"""
+    AffineMap(a, b)
+    AffineMap(z1=>w1, z2=>w2)
+
+The function ``x\\to ax+b``. See also [`LinearFractionalMap`](@ref)
+
+# Examples
+```jldoctest
+julia> PTY.SpecFun.AffineMap(1, 2)
+x → 1.0x + 2.0
+
+julia> PTY.SpecFun.AffineMap(0=>1, 1=>0)
+x → -1.0x + 1.0
+```
+"""
 struct AffineMap{T} <: AbstractLinearFractionalMap{T}
     a::T
     b::T
@@ -101,4 +122,5 @@ end
 ∘(M::AbstractLinearFractionalMap, N::AbstractLinearFractionalMap) = LinearFractionalMap(M.a*N.a+M.b*N.c, M.a*N.b+M.b*N.d, M.c*N.a+M.d*N.c, M.c*N.b+M.d*N.d)
 ∘(M::AffineMap, N::AffineMap) = Affinemap(M.a*N.a, M.a*N.b + M.b)
 
-show(io::IO, ::MIME"text/plain", M::LinearFractionalMap{T}) where T = print(io, "x → ", str_coef(str_coef(M.a)*"x "*str_add(M.b)), " / ", str_coef(str_coef(M.c)*"x "*str_add(M.d)))
+show(io::IO, ::MIME"text/plain", M::LinearFractionalMap) = print(io, "x → ", str_coef(str_coef(M.a)*"x "*str_add(M.b)), " / ", str_coef(str_coef(M.c)*"x "*str_add(M.d)))
+show(io::IO, ::MIME"text/plain", M::AffineMap) = print(io, "x → ", str_coef(M.a), "x ", str_add(M.b))
