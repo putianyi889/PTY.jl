@@ -1,6 +1,6 @@
 module GenericSets
 
-import Base: in, intersect, issubset, show, union, Fix1, minimum, maximum, setdiff, length, setdiff!
+import Base: in, intersect, issubset, show, union, Fix1, minimum, maximum, setdiff, length, setdiff!, datatype_fieldtypes
 using PTY.Infs: ∞
 using PTY.Helper: _invop, _notop
 using LinearAlgebra: norm
