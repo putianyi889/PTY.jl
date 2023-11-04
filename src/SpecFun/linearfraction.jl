@@ -1,7 +1,18 @@
-import Base: one, isone, inv, ∘, promote_rule
+import Base: one, isone, inv, ∘, promote_rule, show
+using PTY.Helper: str_coef, str_add
 
+"""
+    AbstractLinearFractionalMap <: Function
+
+The abstract type for linear fractional maps.
+"""
 abstract type AbstractLinearFractionalMap{T} <: Function end
 
+"""
+    LinearFractionalMap(a, b, c, d)
+
+The function ``x\\to \\frac{ax+b}{cx+d}``
+"""
 struct LinearFractionalMap{T} <: AbstractLinearFractionalMap{T}
     a::T
     b::T
@@ -15,7 +26,22 @@ struct LinearFractionalMap{T} <: AbstractLinearFractionalMap{T}
 end
 LinearFractionalMap(a::T,b::T,c::T,d::T) where T = LinearFractionalMap{float(T)}(float(a),float(b),float(c),float(d))
 LinearFractionalMap(a,b,c,d) = LinearFractionalMap(promote(a,b,c,d)...)
-LinearFractionalMap(p1::Pair, p2::Pair, p3::Pair) = normal_lf_map(p1.second,p2.second,p3.second) \ normal_lf_map(p1.first,p2.first,p3.first)
+
+"""
+    LinearFractionalMap(z1=>w1, z2=>w2, z3=>w3)
+
+A linear fractional map that maps `(z1,z2,z3)` to `(w1,w2,w3)`.
+
+# Example
+```jldoctest
+julia> PTY.SpecFun.LinearFractionalMap(0=>-im, 1=>1, Inf=>im)
+x → ((1.0 - 1.0im)x - 1.0 - 1.0im) / ((-1.0 - 1.0im)x + 1.0 - 1.0im)
+
+julia> PTY.SpecFun.LinearFractionalMap(0=>Inf, 1=>1, Inf=>0)
+x → (0.0x + 1.0) / (1.0x + 0.0)
+```
+"""
+LinearFractionalMap(p1::Pair, p2::Pair, p3::Pair) = inv(normal_lf_map(p1.second,p2.second,p3.second)) ∘ normal_lf_map(p1.first,p2.first,p3.first)
 function normal_lf_map(z1,z2,z3)
     z1,z2,z3 = promote(z1,z2,z3)
     if z1==z2 || z1==z3 || z2==z3
@@ -74,3 +100,5 @@ end
 
 ∘(M::AbstractLinearFractionalMap, N::AbstractLinearFractionalMap) = LinearFractionalMap(M.a*N.a+M.b*N.c, M.a*N.b+M.b*N.d, M.c*N.a+M.d*N.c, M.c*N.b+M.d*N.d)
 ∘(M::AffineMap, N::AffineMap) = Affinemap(M.a*N.a, M.a*N.b + M.b)
+
+show(io::IO, ::MIME"text/plain", M::LinearFractionalMap{T}) where T = print(io, "x → ", str_coef(str_coef(M.a)*"x "*str_add(M.b)), " / ", str_coef(str_coef(M.c)*"x "*str_add(M.d)))

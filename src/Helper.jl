@@ -3,7 +3,7 @@ module Helper
 import Base: //, (:), eps, ceil, floor, front, tail
 import LazyArrays: BroadcastArray, converteltype
 
-export demote_type
+export demote_type, str_coef, str_add
 
 //(x::AbstractFloat, y) = x / y
 //(x, y::AbstractFloat) = x / y
@@ -70,5 +70,24 @@ _notop(::typeof(!=)) = ==
 
 front(A::AbstractVector) = A[1:end-1]
 tail(A::AbstractVector) = A[2:end]
+
+function str_coef(s::AbstractString)
+    t = lstrip(s, ['+', '-'])
+    if contains(t, '+') || contains(t,'-')
+        "(" * s * ")"
+    else
+        s
+    end
+end
+str_coef(x) = str_coef(string(x))
+
+function str_add(s::AbstractString)
+    if s[1] == '-'
+        "- " * lstrip(s[2:end])
+    else
+        "+ " * s
+    end
+end
+str_add(x) = str_add(string(x))
 
 end # module
