@@ -1,3 +1,5 @@
+import Base: ==, length
+
 """
 	(AndGate|XorGate){T<:Integer, V<:AbstractVector{<:Integer}}(gatestate::Bool, args::T, lampstates::V) <:AbstractGate
 	CombGate{T, V} = Union{AndGate{T, V}, XorGate{T, V}}
@@ -33,7 +35,9 @@ end
 const CombGate{T, V} = Union{AndGate{T, V}, XorGate{T, V}}
 for GATE in (:AndGate, :XorGate)
 	#@eval $GATE(gatestate::Bool, args::Integer, lampstates::AbstractVector{<:Integer}) = $GATE{typeof(args), typeof(lampstates)}(gatestate, args, lampstates)
-	@eval Base.:(==)(A::$GATE, B::$GATE) = (A.gatestate == B.gatestate) && (A.args == B.args) && (A.lampstates == B.lampstates)
+	@eval ==(A::$GATE, B::$GATE) = (A.gatestate == B.gatestate) && (A.args == B.args) && (A.lampstates == B.lampstates)
+	@eval lampstates(A::$GATE) = A.lampstates
+	@eval length(A::$GATE) = length(lampstates(A))
 end
 
 """
@@ -90,3 +94,27 @@ function lampstate2string(lampstate::Integer, args::Integer)
 	end
 	return ret
 end
+
+import Base: Fix2
+filtercolor(lampstate::Integer, mask::Integer) = lampstate & mask
+filtercolor(mask::Integer) = Fix2(filtercolor, mask)
+
+"""
+	hascolor(lampstate::Integer, mask::Integer) = lampstate & mask
+	hascolor(mask::Integer) = Fix2(hascolor, mask)
+	hascolor(G::AbstractGate, mask::Integer) = any(hascolor(mask), lampstates(G))
+
+Check if some lamp is connected to some wire (combination), or if some gate has a such lamp.
+"""
+hascolor(lampstate::Integer, mask::Integer) = filtercolor(lampstate, mask) == mask
+hascolor(mask::Integer) = Fix2(hascolor, mask)
+hascolor(G::AbstractGate, mask::Integer) = any(hascolor(mask), lampstates(G))
+
+"""
+	hasallcolor(G::AbstractGate, mask::Integer)
+	hasallcolor(mask::Integer) = Fix2(hasallcolor, mask)
+
+Check if some gate is connect to some wires.
+"""
+hasallcolor(G::AbstractGate, mask::Integer) = mapreduce(filtercolor(mask), |, lampstates(G)) == mask
+hasallcolor(mask::Integer) = Fix2(hasallcolor, mask)
