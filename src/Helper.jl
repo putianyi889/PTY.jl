@@ -5,10 +5,6 @@ import LazyArrays: BroadcastArray, converteltype
 
 export demote_type, str_coef, str_add
 
-//(x::AbstractFloat, y) = x / y
-//(x, y::AbstractFloat) = x / y
-//(x::AbstractFloat, y::AbstractFloat) = x / y
-
 (:)(start, step, stop) = (:)(promote(start, step, stop)...)
 function (:)(start::Complex, step::Complex, stop::Complex) 
     if iszero(real(step))
@@ -21,10 +17,6 @@ function (:)(start::Complex, step::Complex, stop::Complex)
 end
 
 AbstractArray{T, N}(A::BroadcastArray{S, N}) where {T, N, S} = BroadcastArray{T,N}(A.f, A.args...)
-
-eps(::Type{Complex{T}}) where T = eps(T)
-ceil(z::Complex) = ceil(real(z)) + ceil(imag(z))im
-floor(z::Complex) = floor(real(z)) + floor(imag(z))im
 
 """
     demote_type
@@ -68,9 +60,6 @@ _notop(::typeof(≤)) = >
 _notop(::typeof(==)) = !=
 _notop(::typeof(!=)) = ==
 
-front(A::AbstractVector) = A[1:end-1]
-tail(A::AbstractVector) = A[2:end]
-
 function str_coef(s::AbstractString)
     t = lstrip(s, ['+', '-'])
     if contains(t, '+') || contains(t,'-')
@@ -89,8 +78,5 @@ function str_add(s::AbstractString)
     end
 end
 str_add(x) = str_add(string(x))
-
-==(f::Function, ::typeof(identity)) = isone(f)
-==(::typeof(identity), f::Function) = isone(f)
 
 end # module
