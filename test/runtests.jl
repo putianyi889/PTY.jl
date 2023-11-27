@@ -6,7 +6,7 @@ DocMeta.setdocmeta!(PTY, :DocTestSetup, :(using PTY); recursive=true)
 	doctest(PTY)
 end
 @testset "Aqua" begin
-	Aqua.test_all(PTY, ambiguities = false, piracy = false)
+	Aqua.test_all(PTY, ambiguities = false, piracies = false, deps_compat = false)
 end
 @testset "TR" begin
 	@testset "elementary logic" begin

@@ -1,5 +1,7 @@
 module PTY
 
+using PTYQoL
+
 export TR, SpecFun, ContFrac, Helper, Infs, GenericSets
 
 include("Helper.jl") # tools and type piracy
