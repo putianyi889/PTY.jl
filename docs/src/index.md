@@ -4,15 +4,6 @@ Documentation for PTY.jl
 
 ## `PTY.Helper`
 
-### Type piracies
-
-- `//` falls back to `/` for float inputs
-- `:` for range construction now supports complex arithmetic progressions
-- `AbstractArray{T, N}(A::BroadcastArray{S, N})` for eltype conversion
-- `eps` supports complex inputs
-- `ceil` and `floor` support complex inputs.
-- `Base.front` and `Base.tail` support vectors.
-
 ### Tools
 ```@autodocs
 Modules = [PTY.Helper]
