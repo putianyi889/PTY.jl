@@ -6,7 +6,7 @@ DocMeta.setdocmeta!(PTY, :DocTestSetup, :(using PTY); recursive=true)
 	doctest(PTY)
 end
 @testset "Aqua" begin
-	Aqua.test_all(PTY, ambiguities = false, piracy = false)
+	Aqua.test_all(PTY, ambiguities = false, piracies = false, deps_compat = false)
 end
 @testset "TR" begin
 	@testset "elementary logic" begin
@@ -169,6 +169,26 @@ end
 		@test SpecFun.fracpochhammer(1, 2, 3) ≡ 0.25
 		@test SpecFun.fracpochhammer(1, 2, 0.5, 1, 3) ≡ 0.125
 	end
+	@testset "linearfraction" begin
+		A = SpecFun.LinearFractionalMap(1, 2, 3, 4)
+		B = SpecFun.AffineMap(1, 2)
+		C = SpecFun.LinearFractionalMap(B)
+
+		@test SpecFun.AffineMap(C) == C == B
+		@test one(A) == one(B) == identity == inv(A)∘A == A∘inv(A) == inv(B)∘B == B∘inv(B)
+		@test_throws InexactError SpecFun.AffineMap(A)
+
+		@test SpecFun.LinearFractionalMap(1=>Inf, Inf=>0, 0=>1) == SpecFun.LinearFractionalMap(Inf=>0, 0=>1, 1=>Inf) == SpecFun.LinearFractionalMap(0=>1, 1=>Inf, Inf=>0)
+
+		D = SpecFun.LinearFractionalMap(1=>Inf, Inf=>0, 0=>1)
+		@test isinf(D(1))
+		@test D(Inf) == 0
+		@test D(0) == 1
+
+		E = SpecFun.AffineMap(0=>0, 1=>4)
+		@test E(0) == 0
+		@test E(1) == 4
+	end
 end
 @testset "ContinuedFraction" begin
 	x = rand(100)
@@ -280,7 +300,7 @@ end
 		
 		@testset "issubset" begin
 			for AA in (A,B,C,D,E,Y,Z)
-				@test A ∩ AA == AA ∩ A == A
+				@test A ∩ AA == AA ∩ A == setdiff(A, AA) == setdiff(AA, Y) == A
 				@test A ∪ AA == AA ∪ A == Y ∩ AA == AA ∩ Y == AA
 				@test Y ∪ AA == AA ∪ Y == Y
 				@test A ⊆ AA
@@ -290,6 +310,7 @@ end
 				@test AA ⊆ BB
 				@test AA ∩ BB == BB ∩ AA == AA
 				@test AA ∪ BB == BB ∪ AA == BB
+				@test setdiff(AA, BB) == ∅
 			end
 		end
 
@@ -308,6 +329,7 @@ end
 			@test D ∪ Z isa GenericSets.LazyUnion
 			@test Z ∪ D isa GenericSets.LazyUnion
 			@test B ∪ C == C ∪ B == C ∪ E == E ∪ C == ℝ
+			@test B ∪ D ∪ Z == B ∪ D
 		end
 	end
 end

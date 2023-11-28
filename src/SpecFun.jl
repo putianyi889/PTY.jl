@@ -3,6 +3,7 @@ module SpecFun
 using SpecialFunctions: gamma
 
 include("SpecFun/mittagleffler.jl")
+include("SpecFun/linearfraction.jl")
 
 """
     fracpochhammer(a, b, n)

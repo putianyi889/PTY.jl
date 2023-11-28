@@ -58,6 +58,7 @@ for (A,B) in ((EmptySet, AbstractSet),)
         union(S::$B, ::$A) = S
         intersect(S::$A, ::$B) = S
         intersect(::$B, S::$A) = S
+        setdiff(S::$A, ::$B) = ∅
     end
 end
 for A in (EmptySet,)
@@ -65,6 +66,7 @@ for A in (EmptySet,)
         Base.issubset(::$A, ::$A) = true
         Base.union(::$A, S::$A) = S
         Base.intersect(S::$A, ::$A) = S
+        setdiff(::$A, ::$A) = ∅
     end
 end
 for (A,B) in ((AbstractSet, UniversalSet), (UniversalSet, UniversalSet))
@@ -74,6 +76,7 @@ for (A,B) in ((AbstractSet, UniversalSet), (UniversalSet, UniversalSet))
         union(S::$B{T}, ::$A{<:T}) where T = S
         intersect(S::$A{<:T}, ::$B{T}) where T = S
         intersect(::$B{T}, S::$A{<:T}) where T = S
+        setdiff(::$A{<:T}, ::$B{T}) where T = ∅
     end
 end
 for A in (UniversalSet,)
@@ -81,6 +84,7 @@ for A in (UniversalSet,)
         issubset(::$A{T}, ::$A{T}) where T = true
         union(::$A{T}, S::$A{T}) where T = S
         intersect(S::$A{T}, ::$A{T}) where T = S
+        setdiff(::$A{T}, ::$A{T}) where T = ∅
     end
 end
 

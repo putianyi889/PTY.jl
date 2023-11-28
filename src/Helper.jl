@@ -1,13 +1,9 @@
 module Helper
 
-import Base: //, (:), eps, ceil, floor
+import Base: //, (:), eps, ceil, floor, front, tail, ==
 import LazyArrays: BroadcastArray, converteltype
 
-export demote_type
-
-//(x::AbstractFloat, y) = x / y
-//(x, y::AbstractFloat) = x / y
-//(x::AbstractFloat, y::AbstractFloat) = x / y
+export demote_type, str_coef, str_add
 
 (:)(start, step, stop) = (:)(promote(start, step, stop)...)
 function (:)(start::Complex, step::Complex, stop::Complex) 
@@ -21,10 +17,6 @@ function (:)(start::Complex, step::Complex, stop::Complex)
 end
 
 AbstractArray{T, N}(A::BroadcastArray{S, N}) where {T, N, S} = BroadcastArray{T,N}(A.f, A.args...)
-
-eps(::Type{Complex{T}}) where T = eps(T)
-ceil(z::Complex) = ceil(real(z)) + ceil(imag(z))im
-floor(z::Complex) = floor(real(z)) + floor(imag(z))im
 
 """
     demote_type
@@ -67,5 +59,24 @@ _notop(::typeof(≥)) = <
 _notop(::typeof(≤)) = >
 _notop(::typeof(==)) = !=
 _notop(::typeof(!=)) = ==
+
+function str_coef(s::AbstractString)
+    t = lstrip(s, ['+', '-'])
+    if contains(t, '+') || contains(t,'-')
+        "(" * s * ")"
+    else
+        s
+    end
+end
+str_coef(x) = str_coef(string(x))
+
+function str_add(s::AbstractString)
+    if s[1] == '-'
+        "- " * lstrip(s[2:end])
+    else
+        "+ " * s
+    end
+end
+str_add(x) = str_add(string(x))
 
 end # module
