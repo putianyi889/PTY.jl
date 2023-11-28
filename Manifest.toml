@@ -2,7 +2,7 @@
 
 julia_version = "1.9.4"
 manifest_format = "2.0"
-project_hash = "16987a51ab119b73450dbfd972bbb57442410c45"
+project_hash = "00cd612ddc53ffd16269556c6ed5395ee72dd07e"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -243,11 +243,11 @@ uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 version = "1.6.3"
 
 [[deps.PTYQoL]]
-git-tree-sha1 = "6be09edbf3baf8cc328fc42482a49ef53376cfc3"
+git-tree-sha1 = "be582a0d609a07b170b58705ce2886aac4f857f8"
 repo-rev = "master"
 repo-url = "https://github.com/putianyi889/PTYQoL.jl"
 uuid = "551ad714-b11a-4605-8871-12721def4e72"
-version = "0.1.4"
+version = "0.1.5"
 
     [deps.PTYQoL.extensions]
     PTYQoLArrayLayoutsExt = "ArrayLayouts"
