@@ -1,9 +1,10 @@
 module GenericSets
 
-import Base: in, intersect, issubset, show, union, Fix1, minimum, maximum, setdiff, length, setdiff!, datatype_fieldtypes
+import Base: in, intersect, issubset, show, union, Fix1, minimum, maximum, setdiff, length, setdiff!, datatype_fieldtypes, copy
 using PTY.Infs: ∞
 using PTY.Helper: _invop, _notop
 using LinearAlgebra: norm
+using PTYQoL
 
 export interior, closure
 
@@ -86,6 +87,8 @@ struct ReduceSets{T,F,S} <: AbstractSet{T}
 end
 ReduceSets{T,F}(S::Tuple) where {T,F} = ReduceSets{T,F,typeof(S)}(S)
 ReduceSets{T,F}(S::AbstractSet...) where {T,F} = ReduceSets{T,F}(S)
+@struct_copy ReduceSets
+@struct_equal ReduceSets
 
 const LazyIntersection{T,S} = ReduceSets{T,typeof(∩),S}
 const LazyUnion{T,S} = ReduceSets{T,typeof(∪),S}

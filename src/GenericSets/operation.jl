@@ -39,15 +39,6 @@ for A in (HalfLine, LazyIntersection)
                 LazyUnion(S3, S2)
             end
         end
-        union(S1::$A, S2::Set) = S2 ∪ S1
-        function setdiff!(S1::Set, S2::$A)
-            for s in S1
-                if s ∈ S2
-                    pop!(S1, s)
-                end
-            end
-            S1
-        end
     end
 end
 
@@ -72,3 +63,14 @@ setdiff(S::AbstractSet, ::EmptySet) = S
 setdiff(::UniversalSet{Real}, S::HalfLine) = HalfLine(_notop(_cmp(S)), S.a)
 setdiff(S1::HalfLine, S2::HalfLine) = S1 ∩ setdiff(ℝ, S2)
 
+for A in (:HalfLine, :ReduceSets)
+    @eval function setdiff!(S1::Set, S2::$A)
+        for s in S1
+            if s ∈ S2
+                pop!(S1, s)
+            end
+        end
+        S1
+    end
+    @eval union(S1::$A, S2::Set) = S2 ∪ S1
+end

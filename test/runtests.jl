@@ -329,6 +329,7 @@ end
 			@test D ∪ Z isa GenericSets.LazyUnion
 			@test Z ∪ D isa GenericSets.LazyUnion
 			@test B ∪ C == C ∪ B == C ∪ E == E ∪ C == ℝ
+			@test B ∪ D ∪ Z == B ∪ D
 		end
 	end
 end

@@ -5,6 +5,7 @@ import Base.Broadcast: BroadcastStyle
 import InfiniteArrays: ∞
 import LazyArrays: Vcat, LazyArrayStyle
 import FillArrays: Fill, Ones
+import PTYQoL: @struct_copy
 
 """
     ContinuedFraction(b0, a, b)
@@ -62,7 +63,7 @@ function getindex(v::ContinuedFraction, k::Integer)
     end
     ret + v.b0
 end
-copy(v::ContinuedFraction) = ContinuedFraction(v.b0, copy(v.a), copy(v.b))
+@struct_copy ContinuedFraction
 BroadcastStyle(::Type{<:ContinuedFraction}) = LazyArrayStyle{1}()
 
 +(x::Number, v::ContinuedFraction) = ContinuedFraction(x+v.b0, copy(v.a), copy(v.b))
