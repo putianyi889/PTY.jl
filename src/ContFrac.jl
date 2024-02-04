@@ -5,7 +5,7 @@ import Base.Broadcast: BroadcastStyle
 import InfiniteArrays: ∞
 import LazyArrays: Vcat, LazyArrayStyle
 import FillArrays: Fill, Ones
-import PTYQoL: @struct_copy
+using PTYQoL
 
 """
     ContinuedFraction(b0, a, b)
