@@ -339,7 +339,7 @@ end
 	@test sin^0 ≡ identity
 	@test sin^1 ≡ sin
 	@test (sin^2)^3 == sin^6
-	@test ConstFunction(1.0)(3) == 3
+	@test ConstFunction(1.0)(3) == 1.0
 end
 @testset "examples" begin
 	function segmentdisplay()
