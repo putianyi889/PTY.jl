@@ -6,7 +6,7 @@ DocMeta.setdocmeta!(PTY, :DocTestSetup, :(using PTY); recursive=true)
 	doctest(PTY)
 end
 @testset "Aqua" begin
-	Aqua.test_all(PTY, ambiguities = false, piracies = false, deps_compat = false)
+	Aqua.test_all(PTY, ambiguities = false, piracies = false, deps_compat = true)
 end
 @testset "TR" begin
 	@testset "elementary logic" begin
@@ -105,7 +105,7 @@ end
 		end
 
 		@testset "algebra" begin
-			Z2 = residue_ring(ZZ, 2)
+			Z2 = GF(2)
 			M = [rand(Bool, 5, 5) for n in 1:100] 
 			AM = [matrix(Z2, M[n]) for n in 1:100]
 			BM = TR.Z2RowMat.(M)
