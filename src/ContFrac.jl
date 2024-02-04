@@ -5,7 +5,7 @@ import Base.Broadcast: BroadcastStyle
 import InfiniteArrays: ∞
 import LazyArrays: Vcat, LazyArrayStyle
 import FillArrays: Fill, Ones
-import PTYQoL: @struct_copy
+using PTYQoL
 
 """
     ContinuedFraction(b0, a, b)
@@ -19,7 +19,7 @@ julia> using InfiniteArrays, FillArrays
 
 julia> ContFrac.ContinuedFraction(1, Ones{Int}(∞), Ones{Int}(∞)) # the golden ratio
 ℵ₀-element PTY.ContFrac.ContinuedFraction{Rational{Int64}, Ones{Rational{Int64}, 1, Tuple{InfiniteArrays.OneToInf{Int64}}}, Ones{Rational{Int64}, 1, Tuple{InfiniteArrays.OneToInf{Int64}}}} with indices OneToInf():
-   2//1
+    2
    3//2
    5//3
    8//5

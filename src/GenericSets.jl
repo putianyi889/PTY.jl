@@ -88,7 +88,7 @@ end
 ReduceSets{T,F}(S::Tuple) where {T,F} = ReduceSets{T,F,typeof(S)}(S)
 ReduceSets{T,F}(S::AbstractSet...) where {T,F} = ReduceSets{T,F}(S)
 @struct_copy ReduceSets
-@struct_equal ReduceSets
+@struct_all ReduceSets Base.:(==)
 
 const LazyIntersection{T,S} = ReduceSets{T,typeof(∩),S}
 const LazyUnion{T,S} = ReduceSets{T,typeof(∪),S}

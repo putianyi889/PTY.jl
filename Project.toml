@@ -1,7 +1,7 @@
 name = "PTY"
 uuid = "5b83b1ae-c1cb-11e9-23b6-9735346a1d55"
 authors = ["putianyi889 <44583944+putianyi889@users.noreply.github.com>"]
-version = "0.10.0"
+version = "0.11.0"
 
 [deps]
 FillArrays = "1a297f60-69ca-5386-bcde-b61e274b549b"
@@ -10,18 +10,25 @@ InfiniteArrays = "4858937d-0d70-526a-a4dd-2d5cb5dd786c"
 LazyArrays = "5078a376-72f3-5289-bfd5-ec5146d43c02"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 PTYQoL = "551ad714-b11a-4605-8871-12721def4e72"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
+Aqua = "0.8"
+Documenter = "1"
 FillArrays = "1"
 Graphs = "1"
 InfiniteArrays = "0.12, 1, 0.13"
 LazyArrays = "1"
+LinearAlgebra = "1"
+Nemo = "0.41"
+Printf = "1"
+PTYQoL = "0.2"
 SpecialFunctions = "1, 2"
 StaticArrays = "1"
-PTYQoL = "0.1.5"
+Test = "1"
+julia = "1"
 
 [extras]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
@@ -29,6 +36,7 @@ Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Nemo = "2edaba10-b0f1-5616-af89-8c11ac63239a"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
 test = ["Aqua", "Test", "Documenter", "SpecialFunctions", "LinearAlgebra", "Nemo"]

@@ -6,7 +6,7 @@ DocMeta.setdocmeta!(PTY, :DocTestSetup, :(using PTY); recursive=true)
 	doctest(PTY)
 end
 @testset "Aqua" begin
-	Aqua.test_all(PTY, ambiguities = false, piracies = false, deps_compat = false)
+	Aqua.test_all(PTY, ambiguities = false, piracies = false, deps_compat = true, persistent_tasks = false)
 end
 @testset "TR" begin
 	@testset "elementary logic" begin
@@ -105,7 +105,7 @@ end
 		end
 
 		@testset "algebra" begin
-			Z2 = residue_ring(ZZ, 2)
+			Z2 = GF(2)
 			M = [rand(Bool, 5, 5) for n in 1:100] 
 			AM = [matrix(Z2, M[n]) for n in 1:100]
 			BM = TR.Z2RowMat.(M)
@@ -332,6 +332,14 @@ end
 			@test B ∪ D ∪ Z == B ∪ D
 		end
 	end
+end
+@testset "FunctionAlgebras" begin
+	import PTY.FunctionAlgebras.ConstFunction
+	@test (sin^3)(3) == sin(sin(sin(3)))
+	@test sin^0 ≡ identity
+	@test sin^1 ≡ sin
+	@test (sin^2)^3 == sin^6
+	@test ConstFunction(1.0)(3) == 1.0
 end
 @testset "examples" begin
 	function segmentdisplay()

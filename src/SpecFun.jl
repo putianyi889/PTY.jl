@@ -29,4 +29,6 @@ julia> SpecFun.fracpochhammer(1, 2, 0.5, 1, 3) # (1 * 1.5 * 2) / (2 * 3 * 4)
 fracpochhammer(a,b,n) = prod(range(a,length=n)./range(b,length=n));
 fracpochhammer(a,b,stepa,stepb,n) = prod(range(a,step=stepa,length=n)./range(b,step=stepb,length=n));
 
+logistic(r, x) = r*x*(1-x)
+
 end # module
