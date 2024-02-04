@@ -20,7 +20,7 @@ end
 function (f::PowerOfFunction)(x)
     ret = x
     for _ in 1:f.p
-        ret = f(ret...)
+        ret = f.f(ret)
     end
     ret
 end

@@ -334,7 +334,7 @@ end
 	end
 end
 @testset "FunctionAlgebras" begin
-	@test sin^3(3) = sin(sin(sin(3)))
+	@test (sin^3)(3) == sin(sin(sin(3)))
 	@test sin^0 ≡ identity
 	@test sin^1 ≡ sin
 end
