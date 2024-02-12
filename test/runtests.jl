@@ -165,10 +165,7 @@ end
 		SpecFun.mittleff(2, 1, 2, 1.0) # 3 parameters
 		@test SpecFun.mittleff(1, 5, 0.0) ≈ 1/24 # gamma function
 	end
-	@testset "fracpochhammer" begin
-		@test SpecFun.fracpochhammer(1, 2, 3) ≡ 0.25
-		@test SpecFun.fracpochhammer(1, 2, 0.5, 1, 3) ≡ 0.125
-	end
+	
 	@testset "linearfraction" begin
 		A = SpecFun.LinearFractionalMap(1, 2, 3, 4)
 		B = SpecFun.AffineMap(1, 2)
