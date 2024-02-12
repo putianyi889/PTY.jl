@@ -1,9 +1,10 @@
 name = "PTY"
 uuid = "5b83b1ae-c1cb-11e9-23b6-9735346a1d55"
 authors = ["putianyi889 <44583944+putianyi889@users.noreply.github.com>"]
-version = "0.11.0"
+version = "0.11.1"
 
 [deps]
+AlgebraicNumbers = "e86d093a-a386-599e-b7c7-df0420c8bcba"
 FillArrays = "1a297f60-69ca-5386-bcde-b61e274b549b"
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 InfiniteArrays = "4858937d-0d70-526a-a4dd-2d5cb5dd786c"
@@ -23,8 +24,8 @@ InfiniteArrays = "0.12, 1, 0.13"
 LazyArrays = "1"
 LinearAlgebra = "1"
 Nemo = "0.41"
-Printf = "1"
 PTYQoL = "0.2"
+Printf = "1"
 SpecialFunctions = "1, 2"
 StaticArrays = "1"
 Test = "1"
